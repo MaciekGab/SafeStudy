@@ -34,12 +34,12 @@ class AuthService {
 
 //register with email, password <- for Firebase Authentication; name and surname <- for Firestore document
   Future<String> signUp(
-      {String email, String password, String name, String surname}) async {
+      {String email, String password, String firstName, String lastName}) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       await DatabaseService().updateUserData(
-          name, surname, 'user', email, result.user.uid);
+          firstName, lastName, 'user', email, result.user.uid);
       return "Signed up";
     } on FirebaseAuthException catch (e) {
       print(e.message + ' with error code : ${e.code}');

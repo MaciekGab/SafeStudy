@@ -1,5 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
+
+import 'SignUpPage.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -29,11 +33,31 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     ElevatedButton(
                         onPressed: () {
-                          auth.signInWithEmailAndPassword(
-                              email: _emailController.text,
-                              password: _passwordController.text);
+                          var result = context.read<AuthService>().signIn(
+                              email: _emailController.text.trim(),
+                              password: _passwordController.text.trim());
+                          print(result);
+                          // po staremu
+                          // auth.signInWithEmailAndPassword(
+                          //     email: _emailController.text,
+                          //     password: _passwordController.text);
                         },
-                        child: Text('SignIn'))
+                        child: Text('SignIn')),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Nie masz konta?"),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) => SignUpPage()));
+                          },
+                          child: Text(
+                            "Zarestruj się",
+                            style: TextStyle(color: Color.fromRGBO(112, 35, 238, 1)),
+                          ))
+                    ],
+                  ),
                 ]
                 )
             )
