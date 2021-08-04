@@ -7,4 +7,9 @@ class DatabaseService{
   Stream<UserDataModel> streamUserData(String id){
     return _db.collection('profiles').doc(id).snapshots().map((doc) => UserDataModel.fromFirestore(doc));
   }
+
+  Future<String> updateUserData(String firstName, String lastName, String role, String email, String uid) async{
+    await _db.collection('profiles').doc(uid).set({'firstName': firstName, 'lastName': lastName, 'email': email, 'role': role});
+    return 'User data has been updated.';
+  }
 }
