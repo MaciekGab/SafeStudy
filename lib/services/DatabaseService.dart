@@ -12,4 +12,22 @@ class DatabaseService{
     await _db.collection('profiles').doc(uid).set({'firstName': firstName, 'lastName': lastName, 'email': email, 'role': role});
     return 'User data has been updated.';
   }
+
+  // Future<UserDataModel> getUserDataForAdmin(String email){
+  //   var temp = _db.collection('profiles').where('email', isEqualTo: email).snapshots();
+  //   var temp2 = temp.map((event) => UserDataModel.fromFirestore(doc));
+  //   var temp3 = temp2.map((doc) => UserDataModel.fromFirestore(doc));
+  // }
+
+  Stream<List<UserDataModel>> getUsers(String email) {
+    return _db.collection('profiles').where('email',isEqualTo: email).snapshots().map((list) => list.docs.map((doc) =>  UserDataModel.fromFirestore(doc)));
+  }
+  Future<UserDataModel> getUsersData(String email) async{
+    var ref =  await _db.collection('profiles').where('email',isEqualTo: email).get();
+    return UserDataModel.fromMap(ref.docs[0].data());
+  }
+  // Future<UserDataModel> getUserData(String email) async{
+  //   QuerySnapshot snap = _db.collection('profiles').where('email',isEqualTo: email).get();
+  //   snap.doc
+  // }
 }

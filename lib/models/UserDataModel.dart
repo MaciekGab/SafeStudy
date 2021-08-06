@@ -5,15 +5,17 @@ class UserDataModel {
   final String lastName;
   final String email;
   final String role;
+  final String uid;
 
-  UserDataModel({this.firstName, this.lastName, this.email, this.role});
+  UserDataModel({this.firstName, this.lastName, this.email, this.role, this.uid});
 
   factory UserDataModel.fromMap(Map data) {
     return UserDataModel(
       firstName: data['firstName'] ?? '',
       lastName: data['lastName'] ?? '',
       email: data['email'] ?? '',
-      role: data['role'] ?? 'user'
+      role: data['role'] ?? 'user',
+      uid: data['uid'] ?? ''
     );
   }
 
@@ -24,7 +26,8 @@ class UserDataModel {
         firstName: data['firstName'] ?? '',
         lastName: data['lastName'] ?? '',
         email: data['email'] ?? '',
-        role: data['role'] ?? 'user'
+        role: data['role'] ?? 'user',
+        uid: data['uid'] ?? ''
     );
   }
 }

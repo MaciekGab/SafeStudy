@@ -1,8 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
 
+import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
+import 'package:test_auth_with_rolebased_ui/Utils.dart';
 import 'SignUpPage.dart';
 
 class SignInPage extends StatefulWidget {
@@ -23,20 +24,29 @@ class _SignInPageState extends State<SignInPage> {
                 child: Column(children: [
                     TextField(
                       controller: _emailController,
-                      decoration: InputDecoration(hintText: "Enter email"),
+                      decoration: InputDecoration(hintText: "Email"),
                     ),
                     const SizedBox(height: 10.0),
                     TextField(
                       controller: _passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(hintText: "Enter password"),
+                      decoration: InputDecoration(hintText: "Password"),
                     ),
                     ElevatedButton(
-                        onPressed: () {
-                          var result = context.read<AuthService>().signIn(
+                        onPressed: () async {
+                              var result = await context.read<AuthService>().signIn(
                               email: _emailController.text.trim(),
                               password: _passwordController.text.trim());
-                          print(result);
+                              print('the result of this is: $result');
+                              //TODO: Change basic snackbars to something prettier
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(result.authReturn()),
+                                duration: Duration(seconds: 2),
+                                action: SnackBarAction(
+                                  label: 'OK',
+                                  onPressed: () { },
+                                ),
+                              ));
                           // po staremu
                           // auth.signInWithEmailAndPassword(
                           //     email: _emailController.text,

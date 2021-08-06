@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:test_auth_with_rolebased_ui/pages/SignInPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
+import 'package:test_auth_with_rolebased_ui/Utils.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key key}) : super(key: key);
@@ -24,25 +26,25 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Column(children: [
                   TextField(
                     controller: _emailController,
-                    decoration: InputDecoration(hintText: "Enter email"),
+                    decoration: InputDecoration(hintText: "Email"),
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(hintText: "Enter password"),
+                    decoration: InputDecoration(hintText: "Password"),
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
                     controller: _firstNameController,
                     obscureText: true,
-                    decoration: InputDecoration(hintText: "Enter first name"),
+                    decoration: InputDecoration(hintText: "First name"),
                   ),
                   const SizedBox(height: 10.0),
                   TextField(
                     controller: _lastNameController,
                     obscureText: true,
-                    decoration: InputDecoration(hintText: "Enter last name"),
+                    decoration: InputDecoration(hintText: "Last name"),
                   ),
                   ElevatedButton(
                       onPressed: () async {
@@ -55,8 +57,16 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pop(context,
                         MaterialPageRoute(builder: (context){return SignInPage();}));
                         // if(result.toString() == 'user-not-found')
-                        print(result);
-
+                        print(result.authReturn());
+                        //TODO: Change basic snackbars to something prettier
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(result.authReturn()),
+                          duration: Duration(seconds: 2),
+                          action: SnackBarAction(
+                            label: 'OK',
+                            onPressed: () { },
+                          ),
+                        ));
                         //po staremu
                         // auth.signInWithEmailAndPassword(
                         //     email: _emailController.text,
