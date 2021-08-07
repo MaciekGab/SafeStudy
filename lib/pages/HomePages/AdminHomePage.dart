@@ -16,7 +16,7 @@ class AdminHomePage extends StatelessWidget {
     return Scaffold(
       body:  SafeArea(
           child: Center(
-              child: Row(children: [
+              child: Column(children: [
                 SizedBox(
                   child: Icon(Icons.accessible_forward_rounded),
                   width: 150,

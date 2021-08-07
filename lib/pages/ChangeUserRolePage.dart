@@ -13,7 +13,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
   final TextEditingController _roleController = TextEditingController();
   final db = DatabaseService();
   String email = '', firstName = '', lastName = '', role = '',uid = '';
-
+  bool isUserSearched = false;
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -29,16 +29,20 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                         String userEmail = _emailController.text.trim();
                         print(userEmail);
                         final QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('profiles').where('email',isEqualTo: userEmail).get();
-                        var oneSet = querySnapshot.docs[0];
-                        print(oneSet.data().toString());
-                        setState(() {
-                          email = oneSet['email'];
-                          uid = querySnapshot.docs[0]['uid'];
-                          firstName = querySnapshot.docs[0]['firstName'];
-                          lastName = querySnapshot.docs[0]['lastName'];
-                          role = querySnapshot.docs[0]['role'];
-                        });
-                        print(email +' '+ firstName +' '+ lastName +' '+ role+ '|'+uid);
+                        if(querySnapshot.size > 0) {
+                          isUserSearched = true;
+                          var oneSet = querySnapshot.docs[0];
+                          print(oneSet.data().toString());
+                          setState(() {
+                            email = oneSet['email'];
+                            uid = querySnapshot.docs[0]['uid'];
+                            firstName = querySnapshot.docs[0]['firstName'];
+                            lastName = querySnapshot.docs[0]['lastName'];
+                            role = querySnapshot.docs[0]['role'];
+                          });
+                          print(email + ' ' + firstName + ' ' + lastName + ' ' +
+                              role + '|' + uid);
+                        }
                       },
                       child: Container(child: Text('SignIn'))),
                   Text(email),
@@ -51,6 +55,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                   SizedBox(height: 10),
                   Text(role),
                   SizedBox(height: 20),
+                  if(isUserSearched) ...{
                   TextFormField(
                     controller: _roleController,
                     decoration: InputDecoration(hintText: "New role"),
@@ -63,6 +68,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                           'role': _roleController.text.trim()
                         });
                   }, child: Text('Change role'))
+                  }
                 ]
 
                 )

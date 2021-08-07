@@ -14,7 +14,7 @@ class SettingsPage extends StatelessWidget {
       return Scaffold(
           body: SafeArea(
               child: Center(
-                  child: Row(children: [
+                  child: Column(children: [
                     Text(userData.firstName + ' ' + userData.lastName + ' ' + userData.email),
                     ElevatedButton(
                         onPressed: () {

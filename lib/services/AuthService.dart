@@ -25,7 +25,7 @@ class AuthService {
   Future<String> signIn({String email, String password}) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return "Signed in";
+      return "signed-in";
     } on FirebaseAuthException catch (e) {
       print(e.message + ' with error code : ${e.code}');
       return e.code;
@@ -40,7 +40,7 @@ class AuthService {
           email: email, password: password);
       await DatabaseService().updateUserData(
           firstName, lastName, 'user', email, result.user.uid);
-      return "Signed up";
+      return "signed-up";
     } on FirebaseAuthException catch (e) {
       print(e.message + ' with error code : ${e.code}');
       return e.code;
