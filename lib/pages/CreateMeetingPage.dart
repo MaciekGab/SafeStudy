@@ -1,118 +1,94 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
+import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 
-import 'package:test_auth_with_rolebased_ui/pages/SignInPage.dart';
-import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
 import 'package:test_auth_with_rolebased_ui/Utils.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key key}) : super(key: key);
+import 'ShowMeetingQR.dart';
+
+class CreateMeetingPage extends StatefulWidget {
+  const CreateMeetingPage({Key key}) : super(key: key);
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _CreateMeetingPageState createState() => _CreateMeetingPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _CreateMeetingPageState extends State<CreateMeetingPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-
+  final TextEditingController _meetingTitleController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _classroomNameController = TextEditingController();
+  DocumentReference<Map<String, dynamic>> result;
+  String classroom,title,date;
+  bool isMeetingCreated = false;
   @override
   Widget build(BuildContext context) {
+    var userData = Provider.of<UserDataModel>(context);
     return  Scaffold(
         body: SafeArea(
             child: Center(
                 child: Form(
                   key: _formKey,
                   child: Column(children: [
+                    Text('Stwórz spotkanie'),
+                    SizedBox(height: 10.0),
                     TextFormField(
-                        controller: _emailController,
-                        decoration: InputDecoration(hintText: "Email"),
+                        controller: _meetingTitleController,
+                        decoration: InputDecoration(hintText: "Nazwa spotkania"),
                         validator: MultiValidator([
                           RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
-                          EmailValidator(errorText: returnValidationError(ValidationError.invalidEmail))
                         ])
                     ),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     TextFormField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(hintText: "Password"),
+                      controller: _dateController,
+                      decoration: InputDecoration(hintText: "Data"),
                       validator: MultiValidator([
                         RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
-                        MinLengthValidator(6, errorText: returnValidationError(ValidationError.shortPassword)),
-                        PatternValidator(passwordRegex, errorText: returnValidationError(ValidationError.weakPassword))
                       ]),
                     ),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     TextFormField(
-                      controller: _firstNameController,
-                      obscureText: true,
-                      decoration: InputDecoration(hintText: "First name"),
-                      validator: RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
-                    ),
-                    const SizedBox(height: 10.0),
-                    TextFormField(
-                      controller: _lastNameController,
-                      obscureText: true,
-                      decoration: InputDecoration(hintText: "Last name"),
+                      controller: _classroomNameController,
+                      decoration: InputDecoration(hintText: "Sala"),
                       validator: RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
                     ),
                     ElevatedButton(
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
-                            var result = await context.read<AuthService>()
-                                .signUp(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                                firstName: _firstNameController.text.trim(),
-                                lastName: _lastNameController.text.trim()
+                            classroom = _classroomNameController.text.trim();
+                            title = _meetingTitleController.text.trim();
+                            date = _dateController.text.trim();
+
+                            result = await FirebaseFirestore.instance.collection('meetings').add(
+                                {
+                                  'classroom': classroom,
+                                  'date': date,
+                                  'title': title,
+                                  'participants': FieldValue.arrayUnion([userData.uid]),
+                                  'teacherID': userData.uid,
+                                  'isActive': 'true',
+                                }
                             );
-                            // if(result.toString() == 'user-not-found')
-                            print(result);
-                            print(result.authReturn());
-                            //TODO: Change basic snackbars to something prettier
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(result.authReturn()),
-                              duration: Duration(seconds: 2),
-                              action: SnackBarAction(
-                                label: 'OK',
-                                onPressed: () {},
-                              ),
-                            ));
-                            if (result == 'signed-up')
-                              Navigator.pop(context,
-                                  MaterialPageRoute(builder: (context) {
-                                    return SignInPage();
-                                  }));
+                            isMeetingCreated = true;
+                            print(result.id);
+
                           }
                           else {
                             print('Error');
                           }
                         },
-                        child: Text('SignIn')),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Masz już konto?"),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return SignInPage();
-                                  },
-                                ),
-                              );
-                            },
-                            child: Text("Zaloguj się",
-                                style: TextStyle(color: Color.fromRGBO(112, 35, 238, 1))))
-                      ],
-                    ),
+                        child: Text('Create meeting')),
+                    SizedBox(height: 20,),
+                    // if(isMeetingCreated) ...{
+                      ElevatedButton(onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) =>
+                                ShowMeetingQR(meetingID: result.id)));
+                      }, child: Text('Show QR'))
+                    // }
                   ]
 
                   ),

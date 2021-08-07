@@ -36,7 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           EmailValidator(errorText: returnValidationError(ValidationError.invalidEmail))
                         ])
                     ),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: true,
@@ -47,14 +47,14 @@ class _SignUpPageState extends State<SignUpPage> {
                         PatternValidator(passwordRegex, errorText: returnValidationError(ValidationError.weakPassword))
                       ]),
                     ),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     TextFormField(
                       controller: _firstNameController,
                       obscureText: true,
                       decoration: InputDecoration(hintText: "First name"),
                       validator: RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
                     ),
-                    const SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
                     TextFormField(
                       controller: _lastNameController,
                       obscureText: true,

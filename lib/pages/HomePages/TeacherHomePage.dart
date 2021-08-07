@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_auth_with_rolebased_ui/pages/CreateMeetingPage.dart';
 import 'package:test_auth_with_rolebased_ui/pages/SettingsPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
@@ -12,7 +13,7 @@ class TeacherHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var userData = Provider.of<UserDataModel>(context);
+    // var userData = Provider.of<UserDataModel>(context);
     var user = Provider.of<User>(context);
     return Scaffold(body: SafeArea(
       child: Center(child: Column(
@@ -24,7 +25,14 @@ class TeacherHomePage extends StatelessWidget {
                     value: db.streamUserData(user.uid),
                     child: SettingsPage())));
               },
-              child: Text('SignOut')),
+              child: Text('Profile')),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                    value: db.streamUserData(user.uid),
+                    child: CreateMeetingPage())));
+              },
+              child: Text('Create meeting')),
           ElevatedButton(
               onPressed: () {
                 auth.signOut();

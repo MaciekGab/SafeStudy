@@ -9,7 +9,7 @@ class DatabaseService{
   }
 
   Future<String> updateUserData(String firstName, String lastName, String role, String email, String uid) async{
-    await _db.collection('profiles').doc(uid).set({'firstName': firstName, 'lastName': lastName, 'email': email, 'role': role});
+    await _db.collection('profiles').doc(uid).set({'firstName': firstName, 'lastName': lastName, 'email': email, 'role': role, 'uid': uid});
     return 'User data has been updated.';
   }
 
@@ -26,6 +26,8 @@ class DatabaseService{
     var ref =  await _db.collection('profiles').where('email',isEqualTo: email).get();
     return UserDataModel.fromMap(ref.docs[0].data());
   }
+
+
   // Future<UserDataModel> getUserData(String email) async{
   //   QuerySnapshot snap = _db.collection('profiles').where('email',isEqualTo: email).get();
   //   snap.doc
