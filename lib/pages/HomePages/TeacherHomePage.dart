@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_auth_with_rolebased_ui/pages/CreateMeetingPage.dart';
+import 'package:test_auth_with_rolebased_ui/pages/ScanMeetingQRPage.dart';
 import 'package:test_auth_with_rolebased_ui/pages/SettingsPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
@@ -33,6 +34,13 @@ class TeacherHomePage extends StatelessWidget {
                     child: CreateMeetingPage())));
               },
               child: Text('Create meeting')),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                    value: db.streamUserData(user.uid),
+                    child: ScanMeetingQRPage())));
+              },
+              child: Text('Join meeting')),
           ElevatedButton(
               onPressed: () {
                 auth.signOut();

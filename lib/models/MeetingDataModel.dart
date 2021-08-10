@@ -4,10 +4,12 @@ class MeetingDataModel {
   String classroom;
   String date;
   String teacherID;
+  String teacherName;
   String title;
+  bool isActive;
   List participants;
 
-  MeetingDataModel({this.classroom, this.date, this.teacherID, this.title, this.participants});
+  MeetingDataModel({this.classroom, this.date, this.teacherID, this.title, this.participants,this.teacherName,this.isActive});
 
   factory MeetingDataModel.fromMap(Map data) {
     return MeetingDataModel(
@@ -15,7 +17,9 @@ class MeetingDataModel {
         date: data['date'] ?? '',
         teacherID: data['teacherID'] ?? '',
         title: data['title'] ?? 'user',
-        participants: data['participants'] ?? ''
+        participants: data['participants'] ?? '',
+        teacherName: data['teacherName'] ?? '',
+        isActive: data['isActive'] ?? ''
     );
   }
 
@@ -27,15 +31,18 @@ class MeetingDataModel {
         date: data['date'] ?? '',
         teacherID: data['teacherID'] ?? '',
         title: data['title'] ?? 'user',
-        participants: data['participants'] ?? ''
+        participants: data['participants'] ?? '',
+        teacherName: data['teacherName'] ?? '',
+        isActive: data['isActive'] ?? ''
     );
   }
 
-  Map<String, dynamic> participantsList(String participantUID){
+  Map<String, dynamic> participantsList(String participantUID, String userName){
       return {
         'participants': FieldValue.arrayUnion([
           {
-            "participantUID": participantUID
+            'UID': participantUID,
+            'UserName': userName
           }
         ])
       };

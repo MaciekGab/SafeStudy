@@ -6,6 +6,9 @@ import 'package:test_auth_with_rolebased_ui/pages/SettingsPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 
+import '../CreateMeetingPage.dart';
+import '../ScanMeetingQRPage.dart';
+
 class AdminHomePage extends StatelessWidget {
   final auth = FirebaseAuth.instance;
   final db = DatabaseService();
@@ -30,15 +33,29 @@ class AdminHomePage extends StatelessWidget {
                     child: Text('SignOut')),
                 ElevatedButton(
                     onPressed: () {
-                      auth.signOut();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                          value: db.streamUserData(user.uid),
+                          child: ScanMeetingQRPage())));
                     },
-                    child: Text('Emergency')),
+                    child: Text('Join meeting')),
                 ElevatedButton(
                     onPressed: () {
                       Navigator.push(context,
                           MaterialPageRoute(builder: (context) => ChangeUserRolePage()));
                     },
                     child: Text('Edit user')),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                          value: db.streamUserData(user.uid),
+                          child: CreateMeetingPage())));
+                    },
+                    child: Text('Create meeting')),
+                ElevatedButton(
+                    onPressed: () {
+                      auth.signOut();
+                    },
+                    child: Text('Emergency')),
               ]))),
     );
   }
