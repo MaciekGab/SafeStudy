@@ -7,6 +7,8 @@ import 'package:test_auth_with_rolebased_ui/pages/SettingsPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 
+import '../CheckMeetingsPage.dart';
+
 
 class TeacherHomePage extends StatelessWidget {
   final auth = FirebaseAuth.instance;
@@ -14,7 +16,7 @@ class TeacherHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var userData = Provider.of<UserDataModel>(context);
+    var userData = Provider.of<UserDataModel>(context);
     var user = Provider.of<User>(context);
     return Scaffold(body: SafeArea(
       child: Center(child: Column(
@@ -41,6 +43,12 @@ class TeacherHomePage extends StatelessWidget {
                     child: ScanMeetingQRPage())));
               },
               child: Text('Join meeting')),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CheckMeetingsPage(role: userData.role,uid: userData.uid,)));
+              },
+              child: Text('Show meetings')),
           ElevatedButton(
               onPressed: () {
                 auth.signOut();

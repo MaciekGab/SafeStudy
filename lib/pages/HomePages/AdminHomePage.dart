@@ -16,6 +16,7 @@ class AdminHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var userData = Provider.of<UserDataModel>(context);
     var user = Provider.of<User>(context);
     return Scaffold(
       body:  SafeArea(
@@ -55,7 +56,7 @@ class AdminHomePage extends StatelessWidget {
                 ElevatedButton(
                     onPressed: () {
                       Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => CheckMeetingsPage()));
+                          MaterialPageRoute(builder: (context) => CheckMeetingsPage(role: userData.role,uid: userData.uid,)));
                     },
                     child: Text('Show meetings')),
                 ElevatedButton(

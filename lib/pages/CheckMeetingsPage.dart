@@ -3,18 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:test_auth_with_rolebased_ui/pages/MeetingDetailPage.dart';
 
 class CheckMeetingsPage extends StatefulWidget {
-  const CheckMeetingsPage({Key key}) : super(key: key);
+  final String role;
+  final String uid;
+  const CheckMeetingsPage({Key key, @required this.role, @required this.uid}) : super(key: key);
 
   @override
-  _CheckMeetingsPageState createState() => _CheckMeetingsPageState();
+  _CheckMeetingsPageState createState() => _CheckMeetingsPageState(role: role,uid: uid);
 }
 
 class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
   Future _data;
+  final String role;
+  final String uid;
+
+  _CheckMeetingsPageState({ @required this.role, @required this.uid});
+  // String get role => this.role;
+  // String get uid => this.uid;
   @override
   void initState() {
     super.initState();
-    _data = getMeetings();
+    if(role=='admin')
+      _data = getMeetings();
+    else
+      _data = getMeetingsForTeacher(uid);
   }
 
   @override
@@ -49,5 +60,9 @@ class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getMeetings() async{
    var querySnapshot =  await FirebaseFirestore.instance.collection('meetings').get();
    return querySnapshot.docs;
+  }
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getMeetingsForTeacher(String uid) async{
+    var querySnapshot =  await FirebaseFirestore.instance.collection('meetings').where('teacherID', isEqualTo: uid).get();
+    return querySnapshot.docs;
   }
 }
