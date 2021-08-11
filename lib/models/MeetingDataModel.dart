@@ -7,7 +7,7 @@ class MeetingDataModel {
   String teacherName;
   String title;
   bool isActive;
-  List participants;
+  List<ParticipantsDataModel> participants;
 
   MeetingDataModel({this.classroom, this.date, this.teacherID, this.title, this.participants,this.teacherName,this.isActive});
 
@@ -47,4 +47,11 @@ class MeetingDataModel {
         ])
       };
   }
+}
+
+class ParticipantsDataModel {
+  final String uid;
+  final String userName;
+
+  ParticipantsDataModel({this.uid, this.userName});
 }

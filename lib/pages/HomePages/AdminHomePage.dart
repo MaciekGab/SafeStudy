@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_auth_with_rolebased_ui/pages/ChangeUserRolePage.dart';
+import 'package:test_auth_with_rolebased_ui/pages/CheckMeetingsPage.dart';
 import 'package:test_auth_with_rolebased_ui/pages/SettingsPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
@@ -51,6 +52,12 @@ class AdminHomePage extends StatelessWidget {
                           child: CreateMeetingPage())));
                     },
                     child: Text('Create meeting')),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => CheckMeetingsPage()));
+                    },
+                    child: Text('Show meetings')),
                 ElevatedButton(
                     onPressed: () {
                       auth.signOut();
