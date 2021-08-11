@@ -16,7 +16,13 @@ class _ScanMeetingQRPageState extends State<ScanMeetingQRPage> {
   String _qrCodeData = '';
 
   Future<void> scanCode() async {
-    await FlutterBarcodeScanner.scanBarcode('#000000', 'Cancel', false, ScanMode.QR).then((value) => setState(() => _qrCodeData = value));
+    try {
+      await FlutterBarcodeScanner.scanBarcode(
+          '#000000', 'Cancel', false, ScanMode.QR).then((value) =>
+          setState(() => _qrCodeData = value));
+    } catch (e) {
+      print(e);
+    }
   }
 
 
@@ -31,9 +37,13 @@ class _ScanMeetingQRPageState extends State<ScanMeetingQRPage> {
               ElevatedButton(child: Text('Scan'),
                 onPressed: () async {
                   await scanCode();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
-                      value: db.streamUserData(user.uid),
-                      child: JoinMeetingPage(meetingID: _qrCodeData))));
+                  if(_qrCodeData!=null && _qrCodeData!='' && _qrCodeData!='-1') {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context) =>
+                    StreamProvider<UserDataModel>.value(
+                        value: db.streamUserData(user.uid),
+                        child: JoinMeetingPage(meetingID: _qrCodeData))));
+                  }
                 },
               ),
               // Text('QR value: '+ _qrCodeData)
