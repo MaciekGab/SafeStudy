@@ -7,7 +7,7 @@ class MeetingDataModel {
   String teacherName;
   String title;
   bool isActive;
-  List<ParticipantsDataModel> participants;
+  List<dynamic> participants;
 
   MeetingDataModel({this.classroom, this.date, this.teacherID, this.title, this.participants,this.teacherName,this.isActive});
 
