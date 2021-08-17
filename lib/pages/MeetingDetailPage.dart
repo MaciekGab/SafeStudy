@@ -10,7 +10,7 @@ class MeetingDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ParticipantsDataModel> names = List<ParticipantsDataModel>.from(meeting['participants'].map((item) {
       return new ParticipantsDataModel(
-        uid: item['UID'],
+          fcmToken: item['fcmToken'],
           userName: item['UserName']); }));
     names.removeAt(0);
 

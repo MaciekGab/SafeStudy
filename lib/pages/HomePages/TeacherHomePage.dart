@@ -8,6 +8,7 @@ import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 
 import '../CheckMeetingsPage.dart';
+import '../ReportInfectionPage.dart';
 
 
 class TeacherHomePage extends StatelessWidget {
@@ -29,6 +30,13 @@ class TeacherHomePage extends StatelessWidget {
                     child: SettingsPage())));
               },
               child: Text('Profile')),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                    value: db.streamUserData(user.uid),
+                    child: ReportInfectionPage())));
+              },
+              child: Text('Report infection')),
           ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(

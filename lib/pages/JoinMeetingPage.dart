@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,23 +19,6 @@ class JoinMeetingPage extends StatelessWidget {
             child: MeetingSummary(meetingID: meetingID));
     }
   }
-  // {
-  //   var userData = Provider.of<UserDataModel>(context);
-  //   return  Provider(
-  //     child: Scaffold(
-  //         body: SafeArea(child:
-  //         Center(
-  //           child: Column(
-  //             children: [
-  //             ],
-  //           ),
-  //         ),
-  //
-  //         )
-  //     ),
-  //   );
-  // }
-
 
 class MeetingSummary extends StatelessWidget {
   final String meetingID;
@@ -58,7 +42,7 @@ class MeetingSummary extends StatelessWidget {
               SizedBox(height: 10,),
               Text(meetingData.classroom),
               SizedBox(height: 10,),
-              Text(meetingData.date),
+              Text(meetingData.date.toString()),
               SizedBox(height: 10,),
               Text(meetingData.isActive.toString()),
               SizedBox(height: 10,),
@@ -67,10 +51,16 @@ class MeetingSummary extends StatelessWidget {
               ElevatedButton(
                 onPressed: () async {
                   if (meetingData.isActive) {
+                    String messageToken =  await FirebaseMessaging.instance.getToken();
                     await FirebaseFirestore.instance.collection('meetings').doc(
                         meetingID).update(meetingData.participantsList(
-                        userData.uid,
-                        userData.firstName + ' ' + userData.lastName));
+                        messageToken,
+                        userData.firstName + ' ' + userData.lastName,
+                    ));
+                    await FirebaseFirestore.instance.collection('meetings').doc(
+                        meetingID).update(meetingData.participantsIdList(
+                      userData.uid,
+                    ));
                     await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
                     Navigator.of(context).popUntil((route) => route.isFirst);
                   }

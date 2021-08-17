@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:provider/provider.dart';
@@ -70,17 +71,18 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                                   classroom = _classroomNameController.text.trim();
                                   title = _meetingTitleController.text.trim();
                                   date = _dateController.text.trim();
-
+                                  String fcmToken =  await FirebaseMessaging.instance.getToken();
                                   result = await FirebaseFirestore.instance.collection('meetings').add(
                                       {
                                         'classroom': classroom,
-                                        'date': date,
+                                        'date': DateTime.now(),
                                         'title': title,
                                         // 'participants': FieldValue.arrayUnion([userData.uid]),
                                         'participants': FieldValue.arrayUnion([{
-                                          'UID':userData.uid,
+                                          'fcmToken': fcmToken,
                                           'UserName': userData.firstName + ' ' + userData.lastName
                                         }]),
+                                        'participantsId': FieldValue.arrayUnion([userData.uid]),
                                         'teacherID': userData.uid,
                                         'isActive': true,
                                         'teacherName': userData.firstName + ' ' + userData.lastName
