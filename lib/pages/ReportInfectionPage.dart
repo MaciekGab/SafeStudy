@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
@@ -11,6 +12,7 @@ class ReportInfectionPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
     var db = FirebaseFirestore.instance;
+    Set<String> dataSet = {};
     return Scaffold(
         body: SafeArea(child:
         Center(
@@ -18,10 +20,9 @@ class ReportInfectionPage extends StatelessWidget {
             children: [
               ElevatedButton(child: Text('Report'),
                 onPressed: () async{
-                Timestamp dateToCompare = Timestamp.fromDate(DateTime.parse('2021-08-16 00:00:00.000'));
+                Timestamp dateToCompare = Timestamp.fromDate(DateTime.parse('2021-08-09 00:00:00.000'));
                 var result = await db.collection('meetings').where('participantsId',arrayContains: userData.uid).where('date', isGreaterThan: dateToCompare).get();
                   // var result = await db.collection('meetings').where('teacherName',isEqualTo: "Maciek Last").get();
-                  Set<String> dataSet = {};
                   int counter = 0;
                   print(result.docs[0]['date']);
                   print(dateToCompare);
@@ -40,6 +41,29 @@ class ReportInfectionPage extends StatelessWidget {
                   });
                   print('data set is: $dataSet');
                   print('Docs returned: $counter');
+
+                  String fcmUserToken = await FirebaseMessaging.instance.getToken();
+                  dataSet.remove(fcmUserToken);
+                print('data set without userToken: $dataSet');
+
+                List<String> listOfTokens = [];
+                dataSet.forEach((element) {
+                  listOfTokens.add(element);
+                });
+
+                await FirebaseFirestore.instance.collection('reports').add(
+                      {
+                        'reporterName': userData.firstName + ' ' + userData.lastName,
+                        //TODO: change date to actual date not hardcoded value
+                        'dateOfInfection': dateToCompare,
+                        'reportDate': DateTime.now(),
+                        //TODO: change hardcoded value to boolean from sending notification
+                        'isNotificationSent': true,
+                        // 'participants': FieldValue.arrayUnion([userData.uid]),
+                        'peopleToNotify': listOfTokens,
+                        'reporterId': userData.uid,
+                      }
+                  );
                   }
               ),
               // Text('QR value: '+ _qrCodeData)

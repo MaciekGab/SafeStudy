@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/CreatePdfFile.dart';
 
 class MeetingDetailPage extends StatelessWidget {
   final DocumentSnapshot meeting;
@@ -13,19 +14,27 @@ class MeetingDetailPage extends StatelessWidget {
           fcmToken: item['fcmToken'],
           userName: item['UserName']); }));
     names.removeAt(0);
-
+    Timestamp dateToParse = meeting['date'];
+    DateTime date = dateToParse.toDate();
+    CreatePdfFile createPdfFile = CreatePdfFile(meeting: meeting);
     return Scaffold(
       body: SafeArea(
         child: Center(
           child: Column(
             children: [
+              ElevatedButton(onPressed: () async{
+                final createdFile = await createPdfFile.generate();
+
+                createPdfFile.openFile(createdFile);
+              }, child: Text('Generate PDF')),
+              SizedBox(height: 15,),
               Text(meeting['title']),
               SizedBox(height: 10,),
               Text(meeting['teacherName']),
               SizedBox(height: 10,),
               Text(meeting['classroom']),
               SizedBox(height: 10,),
-              Text(meeting['date']),
+              Text(date.toString()),
               SizedBox(height: 10,),
               Text('Attendance list'),
             ListView.builder(

@@ -88,9 +88,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                                         'teacherName': userData.firstName + ' ' + userData.lastName
                                       }
                                   );
-                                  // if(result!=null) {
-                                  //   isMeetingCreated = true;
-                                  // }
+                                  await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(result.id).set({'title': title, 'date': date, 'classroom': classroom, 'teacherName': userData.firstName + ' '+ userData.lastName});
                                   setState(() {
                                     isNotMeetingCreated = false;
                                   });
