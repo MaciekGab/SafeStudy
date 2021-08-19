@@ -39,17 +39,17 @@ class ReportInfectionPage extends StatelessWidget {
                     counter++;
                     // print(element['participants']);
                   });
+                  List<String> testMap;
+                  testMap = dataSet.toList();
                   print('data set is: $dataSet');
+                  print('data set as list is: $testMap');
+                  int value = testMap.length;
+                  print('Length of list to send notification: $value');
                   print('Docs returned: $counter');
 
                   String fcmUserToken = await FirebaseMessaging.instance.getToken();
                   dataSet.remove(fcmUserToken);
                 print('data set without userToken: $dataSet');
-
-                List<String> listOfTokens = [];
-                dataSet.forEach((element) {
-                  listOfTokens.add(element);
-                });
 
                 await FirebaseFirestore.instance.collection('reports').add(
                       {
@@ -60,7 +60,7 @@ class ReportInfectionPage extends StatelessWidget {
                         //TODO: change hardcoded value to boolean from sending notification
                         'isNotificationSent': true,
                         // 'participants': FieldValue.arrayUnion([userData.uid]),
-                        'peopleToNotify': listOfTokens,
+                        'peopleToNotify': dataSet.toList(),
                         'reporterId': userData.uid,
                       }
                   );

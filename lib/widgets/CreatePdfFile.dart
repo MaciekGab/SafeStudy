@@ -17,7 +17,7 @@ class CreatePdfFile {
     String fileName;
     Timestamp dateToParse = meeting['date'];
     DateTime date = dateToParse.toDate();
-    DateFormat fileNameFormat = DateFormat('dd-MM-yyyy HH-mm');
+    DateFormat fileNameFormat = DateFormat('dd-MM-yyyy_HH-mm');
     DateFormat hourOfMeeting = DateFormat('HH:mm');
     DateFormat dateOfMeeting = DateFormat('EEEE, MMMM d, yyyy');
     String formattedFileName = fileNameFormat.format(date);
