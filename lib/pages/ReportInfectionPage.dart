@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
+import '../services/NotificationService.dart';
 
 class ReportInfectionPage extends StatelessWidget {
   const ReportInfectionPage({Key key}) : super(key: key);
@@ -39,6 +41,8 @@ class ReportInfectionPage extends StatelessWidget {
                     counter++;
                     // print(element['participants']);
                   });
+                String fcmUserToken = await FirebaseMessaging.instance.getToken();
+                dataSet.remove(fcmUserToken);
                   List<String> testMap;
                   testMap = dataSet.toList();
                   print('data set is: $dataSet');
@@ -46,10 +50,6 @@ class ReportInfectionPage extends StatelessWidget {
                   int value = testMap.length;
                   print('Length of list to send notification: $value');
                   print('Docs returned: $counter');
-
-                  String fcmUserToken = await FirebaseMessaging.instance.getToken();
-                  dataSet.remove(fcmUserToken);
-                print('data set without userToken: $dataSet');
 
                 await FirebaseFirestore.instance.collection('reports').add(
                       {
@@ -64,8 +64,15 @@ class ReportInfectionPage extends StatelessWidget {
                         'reporterId': userData.uid,
                       }
                   );
+                final response = await NotificationService.sendTo(title: 'Test', body: 'TestowaNotyfikacja69', fcmTokens: testMap);
+                print('Notification response code is: ${response.statusCode}');
+                print('Notification response code is: ${response.body}');
                   }
               ),
+              SizedBox(height: 20,),
+              ElevatedButton(onPressed: () {
+
+              }, child: Text("Send notification"))
               // Text('QR value: '+ _qrCodeData)
             ],
           ),
