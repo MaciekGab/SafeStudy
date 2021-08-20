@@ -22,6 +22,7 @@ class ShowMeetingQRPage extends StatelessWidget {
           SizedBox(height: 20,),
       TextButton(
         onPressed: () => showDialog<String>(
+          barrierDismissible: false,
           context: context,
           builder: (BuildContext context) => AlertDialog(
             title: Text('Do you want to close the meeting?'),

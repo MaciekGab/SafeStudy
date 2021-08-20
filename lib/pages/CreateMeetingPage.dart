@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
@@ -18,10 +19,10 @@ class CreateMeetingPage extends StatefulWidget {
 class _CreateMeetingPageState extends State<CreateMeetingPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _meetingTitleController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _classroomNameController = TextEditingController();
   DocumentReference<Map<String, dynamic>> result;
-  String classroom,title,date;
+  String classroom,title;
+  DateTime date = DateTime.now();
   bool isNotMeetingCreated = true;
   @override
   Widget build(BuildContext context) {
@@ -38,31 +39,30 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) =>
                                 ShowMeetingQRPage(meetingID: result.id)));
-                      }, child: Text('Show QR')),
+                      }, child: Text('Show Meeting QR')),
                       child: Form(
                         key: _formKey,
                         child: Column(children: [
-                          Text('Stwórz spotkanie'),
+                          Text('Create Meeting'),
                           SizedBox(height: 10.0),
                           TextFormField(
                               controller: _meetingTitleController,
-                              decoration: InputDecoration(hintText: "Nazwa spotkania"),
+                              decoration: InputDecoration(hintText: "Title"),
                               validator: MultiValidator([
                                 RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
                               ])
                           ),
                           SizedBox(height: 10.0),
-                          TextFormField(
-                            controller: _dateController,
-                            decoration: InputDecoration(hintText: "Data"),
-                            validator: MultiValidator([
-                              RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
-                            ]),
-                          ),
+                          ElevatedButton(
+                              onPressed: () async{
+                            await pickDateAndTime(context, date).then((value) {setState(() {
+                              date = value;
+                            });});
+                          }, child: Text(DateFormat('dd-MM-yyyy HH:mm').format(date))),
                           SizedBox(height: 10.0),
                           TextFormField(
                             controller: _classroomNameController,
-                            decoration: InputDecoration(hintText: "Sala"),
+                            decoration: InputDecoration(hintText: "Classroom"),
                             validator: RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
                           ),
                           ElevatedButton(
@@ -70,12 +70,12 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                                 if (_formKey.currentState.validate()) {
                                   classroom = _classroomNameController.text.trim();
                                   title = _meetingTitleController.text.trim();
-                                  date = _dateController.text.trim();
+                                  // date = _dateController.text.trim();
                                   String fcmToken =  await FirebaseMessaging.instance.getToken();
                                   result = await FirebaseFirestore.instance.collection('meetings').add(
                                       {
                                         'classroom': classroom,
-                                        'date': DateTime.now(),
+                                        'date': date,
                                         'title': title,
                                         // 'participants': FieldValue.arrayUnion([userData.uid]),
                                         'participants': FieldValue.arrayUnion([{
@@ -107,16 +107,8 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                       ),
                     ),
                     SizedBox(height: 20,),
-                    // if(isMeetingCreated) ...{
-                    //   ElevatedButton(onPressed: () {
-                    //     Navigator.push(context,
-                    //         MaterialPageRoute(builder: (context) =>
-                    //             ShowMeetingQR(meetingID: result.id)));
-                    //   }, child: Text('Show QR'))
-                    // }
                   ],
                 )
-
             )
         )
     );

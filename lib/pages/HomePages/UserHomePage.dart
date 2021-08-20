@@ -27,7 +27,7 @@ class UserHomePage extends StatelessWidget {
                     value: db.streamUserData(user.uid),
                     child: SettingsPage())));
               },
-              child: Text('SignOut')),
+              child: Text('Profile')),
           ElevatedButton(
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
@@ -41,12 +41,7 @@ class UserHomePage extends StatelessWidget {
                     value: db.streamUserData(user.uid),
                     child: ScanMeetingQRPage())));
               },
-              child: Text('Join meeting')),
-          ElevatedButton(
-              onPressed: () {
-                auth.signOut();
-              },
-              child: Text('Emergency'))
+              child: Text('Join meeting'))
         ],
       )),
     ));

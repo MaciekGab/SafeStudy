@@ -56,7 +56,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                                   role + '|' + uid);
                             }
                           },
-                          child: Container(child: Text('SignIn'))),
+                          child: Container(child: Text('Search'))),
                     ],
                   )),
                   Text(email),

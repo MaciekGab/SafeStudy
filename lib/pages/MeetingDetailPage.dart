@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
-import 'package:test_auth_with_rolebased_ui/widgets/CreatePdfFile.dart';
+import 'package:test_auth_with_rolebased_ui/services/CreatePdfFileService.dart';
 
 class MeetingDetailPage extends StatelessWidget {
   final DocumentSnapshot meeting;

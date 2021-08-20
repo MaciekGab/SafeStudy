@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
@@ -32,6 +33,9 @@ class MeetingSummary extends StatelessWidget {
     var userData = Provider.of<UserDataModel>(context);
     var meetingData = Provider.of<MeetingDataModel>(context);
     if(meetingData!=null) {
+      DateTime date = meetingData.date.toDate();
+      DateFormat dateOfMeeting = DateFormat('EEEE, MMMM d, yyyy HH:mm');
+      String formattedDateOfMeeting = dateOfMeeting.format(date);
       return Scaffold(
         body: Center(
           child: Column(
@@ -42,7 +46,7 @@ class MeetingSummary extends StatelessWidget {
               SizedBox(height: 10,),
               Text(meetingData.classroom),
               SizedBox(height: 10,),
-              Text(meetingData.date.toString()),
+              Text(formattedDateOfMeeting),
               SizedBox(height: 10,),
               Text(meetingData.isActive.toString()),
               SizedBox(height: 10,),
