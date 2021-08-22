@@ -21,8 +21,6 @@ class SettingsPage extends StatelessWidget {
                         onPressed: () {
                           Navigator.pop(context);
                           context.read<AuthService>().singOut();
-                          // starsza na pewno działąca wersja
-                          // auth.signOut();
                         },
                         child: Text('SignOut')),
                     Text('Your meetings history:'),

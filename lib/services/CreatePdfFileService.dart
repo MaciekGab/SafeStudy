@@ -9,13 +9,13 @@ import 'package:intl/intl.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 
 class CreatePdfFile {
-  final DocumentSnapshot meeting;
+  final MeetingDataModel meeting;
 
   CreatePdfFile({this.meeting});
 
   Future<File> generate() async{
     String fileName;
-    Timestamp dateToParse = meeting['date'];
+    Timestamp dateToParse = meeting.date;
     DateTime date = dateToParse.toDate();
     DateFormat fileNameFormat = DateFormat('dd-MM-yyyy_HH-mm');
     DateFormat hourOfMeeting = DateFormat('HH:mm');
@@ -23,14 +23,14 @@ class CreatePdfFile {
     String formattedFileName = fileNameFormat.format(date);
     String formattedHourOfMeeting = hourOfMeeting.format(date);
     String formattedDateOfMeeting = dateOfMeeting.format(date);
-    fileName = meeting['title'] + '_' +formattedFileName;
+    fileName = meeting.title + '_' +formattedFileName;
     final document = Document();
 
     document.addPage(MultiPage(
         build: (context) => [
           // createTitle(title: ),
-          createMeetingDetails(title: meeting['title'],date: formattedDateOfMeeting, hour: formattedHourOfMeeting, classroom: meeting['classroom'], teacherName: meeting['teacherName']),
-          createAttendanceList(attendanceList: meeting['participants'])
+          createMeetingDetails(title: meeting.title,date: formattedDateOfMeeting, hour: formattedHourOfMeeting, classroom: meeting.classroom, teacherName: meeting.teacherName),
+          createAttendanceList(attendanceList: meeting.participants)
         ],
     ));
     return saveDocument(name: fileName, document: document);

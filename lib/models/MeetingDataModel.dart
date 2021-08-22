@@ -35,6 +35,7 @@ class MeetingDataModel {
         teacherID: data['teacherID'] ?? '',
         title: data['title'] ?? 'user',
         participants: data['participants'] ?? '',
+        participantsId: data['participantsId'] ?? '',
         teacherName: data['teacherName'] ?? '',
         isActive: data['isActive'] ?? ''
     );
@@ -75,4 +76,9 @@ class ParticipantsDataModel {
   final String userName;
 
   ParticipantsDataModel({this.fcmToken, this.userName});
+}
+class ParticipantsIdDataModel{
+  final String uid;
+
+  ParticipantsIdDataModel(this.uid);
 }

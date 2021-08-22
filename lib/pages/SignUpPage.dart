@@ -74,7 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             // if(result.toString() == 'user-not-found')
                             print(result);
                             print(result.authReturn());
-                            //TODO: Change basic snackbars to something prettier
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(result.authReturn()),
                               duration: Duration(seconds: 2),
@@ -93,11 +92,11 @@ class _SignUpPageState extends State<SignUpPage> {
                             print('Error');
                           }
                         },
-                        child: Text('SignIn')),
+                        child: Text('Sign up')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Masz już konto?"),
+                        Text("Already have an account?"),
                         TextButton(
                             onPressed: () {
                               Navigator.pop(
@@ -109,7 +108,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 ),
                               );
                             },
-                            child: Text("Zaloguj się",
+                            child: Text("Sign in",
                                 style: TextStyle(color: Color.fromRGBO(112, 35, 238, 1))))
                       ],
                     ),

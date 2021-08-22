@@ -17,15 +17,15 @@ enum ValidationError {
 String returnValidationError(ValidationError validationError){
   switch(validationError) {
     case ValidationError.isRequired:
-      return 'Pole jest wymagane';
+      return 'Filed is required';
     case ValidationError.invalidEmail:
-      return 'Podaj poprany email';
+      return 'Enter an email';
     case ValidationError.shortPassword:
-      return 'Hasło musi zaweirać przynajmniej 6 znaków';
+      return 'Password must be at least 6 characters long';
     case ValidationError.weakPassword:
-      return 'Hasło musi zawierać: małą literę, dużą literę, cyfrę, znak specjalny';
+      return 'Password must contain an uppercase, lowercase, digit and special character';
     default:
-      return 'Nieoblużony przypadek';
+      return 'Unhandled case';
   }
 }
 Future<DateTime> pickDate(BuildContext context, DateTime initialDate) async{

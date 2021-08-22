@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
+import 'package:test_auth_with_rolebased_ui/theme.dart';
 import 'package:test_auth_with_rolebased_ui/wrappers/AuthWrapper.dart';
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
 
@@ -32,17 +33,12 @@ class MyApp extends StatelessWidget {
               .read<AuthService>()
               .authStateChanges,
         ),
-
-        //Samo to działa więcj jak to z góry nie będzie chciało to zostaje to
-        // update: wydaje się że tamto działa, poczekamy zobaczymy
-        // StreamProvider<User>.value(
-        //     value: FirebaseAuth.instance.authStateChanges())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme: CustomTheme.lightTheme,
+        darkTheme: CustomTheme.darkTheme,
+        themeMode: ThemeMode.system,
         home: AuthWrapper(),
       ),
     );

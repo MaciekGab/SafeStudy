@@ -9,11 +9,20 @@ class ShowMeetingQRPage extends StatelessWidget {
   var _db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: SafeArea(child: Column(
         children: [
           Center(
             child: QrImage(
+              eyeStyle: QrEyeStyle(
+                eyeShape: QrEyeShape.square,
+                color: theme.colorScheme.onBackground,
+              ),
+              dataModuleStyle: QrDataModuleStyle(
+                dataModuleShape: QrDataModuleShape.square,
+                color: theme.colorScheme.onBackground,
+              ),
               data: meetingID,
               version: QrVersions.auto,
               size: 200.0,
