@@ -65,27 +65,22 @@ class _SignUpPageState extends State<SignUpPage> {
                         SizedBox(height: 10.0),
                         MyInput(
                           controller: _firstNameController,
-                          obscureText: true,
                           hintText: 'First name',
                           multiValidator: MultiValidator([RequiredValidator(errorText: returnValidationError(ValidationError.isRequired))]),
                         ),
                         SizedBox(height: 10.0),
                         MyInput(
                           controller: _lastNameController,
-                          obscureText: true,
                           hintText: 'Last name',
                           multiValidator: MultiValidator([RequiredValidator(errorText: returnValidationError(ValidationError.isRequired))]),
                         ),
                             SizedBox(height: 0.005 * size.height,),
                             RoundedElevatedButton(alignment: Alignment.centerRight, onPressed: () async {
                               await signUpAction(context);
-                            }, child:Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(' Sign Up '),
-                                Icon(Icons.login),
-                              ],
-                            ),),
+                            },smallButton: true,
+                              icon: Icons.login,
+                             child: Text(' Sign Up '),
+                            ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

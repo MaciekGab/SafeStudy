@@ -6,8 +6,9 @@ class RoundedText extends StatelessWidget {
   final String _text;
   final String _roundedSide;
   final double _width;
+  final double _height;
   final Alignment _alignment;
-  const RoundedText({Key key, @required String text, @required String roundedSide,@required double width, @required Alignment alignment}) : _text = text, _roundedSide = roundedSide, _width = width, _alignment = alignment, super(key: key);
+  const RoundedText({Key key, @required String text, @required String roundedSide,@required double width, @required Alignment alignment, double height}) : _text = text, _roundedSide = roundedSide, _width = width, _alignment = alignment, _height = height, super(key: key);
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -16,6 +17,7 @@ class RoundedText extends StatelessWidget {
     return Align(alignment: _alignment, child:
     Container(
       width: _width,
+      height: _height ?? null,
       decoration: BoxDecoration(
         color: theme.colorScheme.background,
         borderRadius: _roundedSide =='right' ? BorderRadius.horizontal(right: Radius.circular(45.0)) : BorderRadius.horizontal(left: Radius.circular(45.0)),

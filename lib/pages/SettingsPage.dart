@@ -30,21 +30,17 @@ class SettingsPage extends StatelessWidget {
                     Expanded(child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(),
-                    RoundedText(text: '${userData.firstName} ${userData.lastName}', roundedSide: 'left',width: 0.8*size.width,alignment: Alignment.centerRight,),
+                    SizedBox(height: 0.01*size.height,),
+                    RoundedText(text: '${userData.firstName} ${userData.lastName}', roundedSide: 'left',width: 0.8*size.width, height: 0.1*size.height,alignment: Alignment.centerRight,),
                     RoundedElevatedButton(
                             onPressed: () {
                               Navigator.pop(context);
                               context.read<AuthService>().singOut();
                             },
                             alignment: Alignment.centerRight,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(' Sign Out '),
-                                Icon(Icons.logout),
-                              ],
-                            )
+                            icon: Icons.logout,
+                            smallButton: true,
+                            child: Text(' Sign Out ')
                     ),
                     Container(
                       padding: EdgeInsets.only(left:20.0),

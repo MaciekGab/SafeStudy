@@ -8,6 +8,8 @@ import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 
 class JoinMeetingPage extends StatelessWidget {
   final String meetingID;
@@ -33,9 +35,10 @@ class MeetingSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
     var meetingData = Provider.of<MeetingDataModel>(context);
+    final size = MediaQuery.of(context).size;
     if(meetingData!=null) {
       DateTime date = meetingData.date.toDate();
-      DateFormat dateOfMeeting = DateFormat('EEEE, MMMM d, yyyy HH:mm');
+      DateFormat dateOfMeeting = DateFormat('dd.MM.yyyy HH:mm');
       String formattedDateOfMeeting = dateOfMeeting.format(date);
       return SafeArea(
         child: Scaffold(
@@ -44,42 +47,15 @@ class MeetingSummary extends StatelessWidget {
           ),
           body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(meetingData.teacherName),
-                SizedBox(height: 10,),
-                Text(meetingData.title),
-                SizedBox(height: 10,),
-                Text(meetingData.classroom),
-                SizedBox(height: 10,),
-                Text(formattedDateOfMeeting),
-                SizedBox(height: 10,),
-                Text(meetingData.isActive.toString()),
-                SizedBox(height: 10,),
-                Text(meetingData.teacherID),
-                SizedBox(height: 20,),
-                ElevatedButton(
-                  onPressed: () async {
-                    if (meetingData.isActive) {
-                      String messageToken =  await FirebaseMessaging.instance.getToken();
-                      await FirebaseFirestore.instance.collection('meetings').doc(
-                          meetingID).update(meetingData.participantsList(
-                          messageToken,
-                          userData.firstName + ' ' + userData.lastName,
-                      ));
-                      await FirebaseFirestore.instance.collection('meetings').doc(
-                          meetingID).update(meetingData.participantsIdList(
-                        userData.uid,
-                      ));
-                      await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    }
-                    else {
-                      print('Meeting is closed!');
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    }
-                  },
-                  child: Text('Join!'),
-                )
+                RoundedText(text: 'Details', roundedSide: 'left', width: 0.6*size.width, height: 0.1*size.height,alignment: Alignment.centerRight),
+                RoundedText(text: 'Title: ${meetingData.title}', roundedSide: 'right', width: 0.8*size.width, height: 0.1*size.height,alignment: Alignment.centerLeft),
+                RoundedText(text: 'Teacher: ${meetingData.teacherName}', roundedSide: 'right', width: 0.8*size.width, height: 0.1*size.height,alignment: Alignment.centerLeft),
+                RoundedText(text: 'Date: $formattedDateOfMeeting', roundedSide: 'right', width: 0.8*size.width, height: 0.1*size.height,alignment: Alignment.centerLeft),
+                RoundedElevatedButton(child: Text(' Join Meeting'), onPressed: () async {
+                  await joinMeetingAction(meetingData, userData, context);
+                }, alignment: Alignment.centerRight, smallButton: true, icon: Icons.check),
               ],
             ),
           ),
@@ -88,5 +64,34 @@ class MeetingSummary extends StatelessWidget {
     }
     else
     return Scaffold(body: Center(child: CircularProgressIndicator()));
+  }
+
+  Future<void> joinMeetingAction(MeetingDataModel meetingData, UserDataModel userData, BuildContext context) async {
+
+    if (meetingData.isActive) {
+      String messageToken =  await FirebaseMessaging.instance.getToken();
+      await FirebaseFirestore.instance.collection('meetings').doc(
+          meetingID).update(meetingData.participantsList(
+          messageToken,
+          userData.firstName + ' ' + userData.lastName,
+      ));
+      await FirebaseFirestore.instance.collection('meetings').doc(
+          meetingID).update(meetingData.participantsIdList(
+        userData.uid,
+      ));
+      await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Couldn't join. Meeting may have ended"),
+        duration: Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () { },
+        ),
+      ));
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 }

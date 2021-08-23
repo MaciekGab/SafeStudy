@@ -35,7 +35,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
                 content: Text(value.notification.body),
                 actions: [
                   TextButton(
-                    child: Text("Ok"),
+                    child: Text("OK"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -59,7 +59,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
               content: Text(event.notification.body),
               actions: [
                 TextButton(
-                  child: Text("Ok"),
+                  child: Text("OK"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -80,7 +80,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
               content: Text(event.notification.body),
               actions: [
                 TextButton(
-                  child: Text("Ok"),
+                  child: Text("OK"),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

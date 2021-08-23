@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class RoundedElevatedButton extends StatelessWidget {
   final Widget child;
@@ -6,12 +7,16 @@ class RoundedElevatedButton extends StatelessWidget {
   final Alignment alignment;
   final double width;
   final double height;
-  const RoundedElevatedButton({Key key,@required this.child,@required this.onPressed,@required this.alignment, this.width, this.height})
+  final bool smallButton;
+  final IconData icon;
+  const RoundedElevatedButton({Key key,@required this.child,@required this.onPressed,@required this.alignment, this.width, this.height,@required this.smallButton,@required this.icon, })
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final orientation = MediaQuery.of(context).orientation;
+    final size = MediaQuery.of(context).size;
     return
       Align(
           alignment: alignment,
@@ -21,7 +26,10 @@ class RoundedElevatedButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         primary: Colors.transparent,
-        textStyle: TextStyle(color: Colors.white),
+        textStyle: orientation == Orientation.portrait ? TextStyle(color: Colors.white,fontFamily: GoogleFonts.exo2().fontFamily,
+            fontSize: smallButton ? 0.02* size.height : 0.025*size.height
+        ) : TextStyle(color: Colors.white,fontFamily: GoogleFonts.exo2().fontFamily,
+        ),
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25.0),
@@ -40,7 +48,20 @@ class RoundedElevatedButton extends StatelessWidget {
                   theme.colorScheme.primary,
                 ])),
         padding: EdgeInsets.all(10.0),
-        child: child,
+        child: smallButton ? Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            child,
+            Icon(icon),
+          ],
+        ) : Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(icon, color: Colors.transparent),
+            child,
+            Icon(icon),
+          ],
+        ),
       ),
     )
           )

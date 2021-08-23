@@ -61,13 +61,10 @@ class _SignInPageState extends State<SignInPage> {
                           SizedBox(height: 0.005 * size.height,),
                           RoundedElevatedButton(alignment: Alignment.centerRight, onPressed: () async {
                             await signInAction();
-                          }, child:Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(' Sign In '),
-                              Icon(Icons.login),
-                            ],
-                          ),),
+                          }, child:Text(' Sign In '),
+                            smallButton: true,
+                            icon: Icons.login,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [

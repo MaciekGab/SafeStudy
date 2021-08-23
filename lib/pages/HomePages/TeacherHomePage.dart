@@ -10,6 +10,7 @@ import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 
+import '../../SizeConfig.dart';
 import '../CheckMeetingsPage.dart';
 import '../ReportInfectionPage.dart';
 
@@ -19,17 +20,32 @@ class TeacherHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var userData = Provider.of<UserDataModel>(context);
-    var user = Provider.of<User>(context);
-    var size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
           appBar: GradientAppBar(),
-          body: Column(
+          body:  OrientationBuilder(
+          builder: (context,orientation) =>
+    orientation == Orientation.portrait
+    ? PortraitView()
+    : LandscapeView()
+    )));
+  }
+}
+class PortraitView extends StatelessWidget {
+  final auth = FirebaseAuth.instance;
+  final db = DatabaseService();
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    var size = MediaQuery.of(context).size;
+    var userData = Provider.of<UserDataModel>(context);
+    var user = Provider.of<User>(context);
+    return Container(
+        child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              RoundedText(text: 'Welcome ${userData.firstName}', roundedSide: 'left',width: 0.8*size.width,alignment: Alignment.centerRight,),
+              RoundedText(text: 'Welcome ${userData.firstName}', roundedSide: 'left',width: 0.8*size.width, height: 0.1*size.height,alignment: Alignment.centerRight,),
               RoundedElevatedButton(
                 onPressed: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
@@ -37,16 +53,9 @@ class TeacherHomePage extends StatelessWidget {
                       child: SettingsPage())));
                 },
                 alignment: Alignment.center,
-                child: Row(
-                  // mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(Icons.person, color: Colors.transparent),
-                    Text(' Profile '),
-                    Icon(Icons.person),
-                  ],
-                ),
-                width: 0.8 * size.width,
+                child: Text(' Profile '),
+                icon:Icons.person,
+                width: 0.8 * size.width, smallButton: false,
               ),
               RoundedElevatedButton(
                 onPressed: () {
@@ -55,16 +64,9 @@ class TeacherHomePage extends StatelessWidget {
                       child: ReportInfectionPage())));
                 },
                 alignment: Alignment.center,
-                child: Row(
-                  // mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(Icons.local_hospital_rounded, color: Colors.transparent),
-                    Text(' Report infection '),
-                    Icon(Icons.local_hospital_rounded),
-                  ],
-                ),
-                width: 0.8 * size.width,
+                child: Text(' Report infection '),
+                icon:Icons.local_hospital_rounded,
+                width: 0.8 * size.width, smallButton: false,
               ),
               RoundedElevatedButton(
                 onPressed: () {
@@ -73,16 +75,9 @@ class TeacherHomePage extends StatelessWidget {
                       child: ScanMeetingQRPage())));
                 },
                 alignment: Alignment.center,
-                child: Row(
-                  // mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(Icons.qr_code_scanner_rounded, color: Colors.transparent),
-                    Text(' Join meeting '),
-                    Icon(Icons.qr_code_scanner_rounded),
-                  ],
-                ),
-                width: 0.8 * size.width,
+                child:
+                Text(' Join meeting '),
+                width: 0.8 * size.width, icon: Icons.qr_code_scanner_rounded, smallButton: false,
               ),
               RoundedElevatedButton(
                 onPressed: () {
@@ -91,16 +86,8 @@ class TeacherHomePage extends StatelessWidget {
                       child: CreateMeetingPage())));
                 },
                 alignment: Alignment.center,
-                child: Row(
-                  // mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(Icons.group_add_rounded, color: Colors.transparent),
-                    Text(' Create meeting '),
-                    Icon(Icons.group_add_rounded),
-                  ],
-                ),
-                width: 0.8 * size.width,
+                child: Text(' Create meeting '),
+                width: 0.8 * size.width, smallButton: false, icon: Icons.group_add_rounded,
               ),
               RoundedElevatedButton(
                 onPressed: () {
@@ -108,19 +95,97 @@ class TeacherHomePage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => CheckMeetingsPage(role: userData.role,uid: userData.uid,)));
                 },
                 alignment: Alignment.center,
-                child: Row(
-                  // mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Icon(Icons.calendar_today_rounded, color: Colors.transparent),
-                    Text(' Show meetings '),
-                    Icon(Icons.calendar_today_rounded),
-                  ],
-                ),
-                width: 0.8 * size.width,
+                child: Text(' Show meetings '),
+                width: 0.8 * size.width, icon: Icons.calendar_today_rounded, smallButton: false,
               ),
-        ],
-      )),
+            ])
+    );
+  }
+}
+
+class LandscapeView extends StatelessWidget {
+  final auth = FirebaseAuth.instance;
+  final db = DatabaseService();
+  @override
+  Widget build(BuildContext context) {
+    SizeConfig().init(context);
+    var size = MediaQuery.of(context).size;
+    var userData = Provider.of<UserDataModel>(context);
+    var user = Provider.of<User>(context);
+    return Container(
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              RoundedText(text: 'Welcome ${userData.firstName}', roundedSide: 'left',width: 0.8*size.width,alignment: Alignment.centerRight,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RoundedElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                          value: db.streamUserData(user.uid),
+                          child: SettingsPage())));
+                    },
+                    alignment: Alignment.center,
+                    child: Text(' Profile '),
+                    icon: Icons.person,
+                    width: 0.4 * size.width, smallButton: false,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RoundedElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                          value: db.streamUserData(user.uid),
+                          child: ReportInfectionPage())));
+                    },
+                    alignment: Alignment.center,
+                    icon: Icons.local_hospital_rounded,
+                    child: Text(' Report infection '),
+                    width: 0.4 * size.width, smallButton: false,
+                  ),
+                  RoundedElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                          value: db.streamUserData(user.uid),
+                          child: ScanMeetingQRPage())));
+                    },
+                    alignment: Alignment.center,
+                    child: Text(' Join meeting '),
+                    width: 0.4 * size.width, smallButton: false, icon: Icons.qr_code_scanner_rounded,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  RoundedElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => StreamProvider<UserDataModel>.value(
+                          value: db.streamUserData(user.uid),
+                          child: CreateMeetingPage())));
+                    },
+                    alignment: Alignment.center,
+                    child: Text(' Create meeting '),
+                    width: 0.4 * size.width, icon: Icons.group_add_rounded, smallButton: false,
+                  ),
+                  RoundedElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => CheckMeetingsPage(role: userData.role,uid: userData.uid,)));
+                    },
+                    alignment: Alignment.center,
+                    child: Text(' Show meetings '),
+                    width: 0.4 * size.width, icon: Icons.calendar_today_rounded, smallButton: false,
+                  ),
+                ],
+              ),
+
+            ])
     );
   }
 }

@@ -32,13 +32,13 @@ class CustomTheme {
         fillColor: Colors.white,
         hintStyle: TextStyle(color: Color(0xFF9575CD)),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(color: Color(0xFF9575CD), width: 1.5)),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(color: Color(0xFF9575CD), width: 2)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(30),
             borderSide: BorderSide(color: Color(0xFF9575CD), width: 2))),
   );
 

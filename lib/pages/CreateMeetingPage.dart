@@ -8,6 +8,9 @@ import 'package:provider/provider.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/Utils.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 import 'ShowMeetingQRPage.dart';
 
 class CreateMeetingPage extends StatefulWidget {
@@ -28,94 +31,103 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
   @override
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
+    final size = MediaQuery.of(context).size;
     return  SafeArea(
         child: Scaffold(
             appBar: GradientAppBar(
               title: Text('Create Meeting'),
             ),
             body: Center(
-                child: Column(
-                  children: [
-                    Visibility(
+                    child: Visibility(
                       visible: isNotMeetingCreated,
                       replacement:
-                      ElevatedButton(onPressed: () {
+                      RoundedElevatedButton(child: Text('Show Meeting QR'), onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) =>
                                 ShowMeetingQRPage(meetingID: result.id)));
-                      }, child: Text('Show Meeting QR')),
-                      child: Form(
-                        key: _formKey,
-                        child: Column(children: [
-                          Text('Create Meeting'),
-                          SizedBox(height: 10.0),
-                          TextFormField(
-                              controller: _meetingTitleController,
-                              decoration: InputDecoration(hintText: "Title"),
-                              validator: MultiValidator([
-                                RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
-                              ])
+                      }, alignment: Alignment.center, smallButton: false, icon: Icons.qr_code_rounded,width: 0.7* size.width,height: 0.1*size.height,),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          RoundedText(text: 'Meeting data', roundedSide: 'right', width: 0.8*size.width,height: 0.1*size.height ,alignment: Alignment.centerLeft),
+                          Form(
+                            key: _formKey,
+                            child: Column(children: [
+                              SizedBox(height: 10.0),
+                              MyInput(
+                                  controller: _meetingTitleController,
+                                  hintText: "Title",
+                                  multiValidator: MultiValidator([
+                                    RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
+                                  ])
+                              ),
+                              SizedBox(height: 0.01*size.height,),
+                              RoundedElevatedButton(onPressed: () async{
+                                await pickDateAndTime(context, date).then((value) {setState(() {
+                                  date = value;
+                                });});
+                              },child: Text(DateFormat('dd-MM-yyyy HH:mm').format(date)),icon: Icons.calendar_today_rounded,smallButton: false,alignment: Alignment.center,),
+                              SizedBox(height: 0.01*size.height,),
+                              MyInput(
+                                controller: _classroomNameController,
+                                hintText: "Classroom",
+                                multiValidator: MultiValidator([RequiredValidator(errorText: returnValidationError(ValidationError.isRequired))]),
+                              ),
+                              SizedBox(height: 0.01*size.height,),
+                              RoundedElevatedButton(onPressed: () async{
+                                await createMeetingAction(userData, context);
+                              },child: Text(' Create '),icon: Icons.check,smallButton: true,alignment: Alignment.centerRight,),
+                            ]
+                            ),
                           ),
-                          SizedBox(height: 10.0),
-                          ElevatedButton(
-                              onPressed: () async{
-                            await pickDateAndTime(context, date).then((value) {setState(() {
-                              date = value;
-                            });});
-                          }, child: Text(DateFormat('dd-MM-yyyy HH:mm').format(date))),
-                          SizedBox(height: 10.0),
-                          TextFormField(
-                            controller: _classroomNameController,
-                            decoration: InputDecoration(hintText: "Classroom"),
-                            validator: RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
-                          ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  classroom = _classroomNameController.text.trim();
-                                  title = _meetingTitleController.text.trim();
-                                  // date = _dateController.text.trim();
-                                  String fcmToken =  await FirebaseMessaging.instance.getToken();
-                                  result = await FirebaseFirestore.instance.collection('meetings').add(
-                                      {
-                                        'classroom': classroom,
-                                        'date': date,
-                                        'title': title,
-                                        // 'participants': FieldValue.arrayUnion([userData.uid]),
-                                        'participants': FieldValue.arrayUnion([{
-                                          'fcmToken': fcmToken,
-                                          'UserName': userData.firstName + ' ' + userData.lastName
-                                        }]),
-                                        'participantsId': FieldValue.arrayUnion([userData.uid]),
-                                        'teacherID': userData.uid,
-                                        'isActive': true,
-                                        'teacherName': userData.firstName + ' ' + userData.lastName
-                                      }
-                                  );
-                                  await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(result.id).set({'title': title, 'date': date, 'classroom': classroom, 'teacherName': userData.firstName + ' '+ userData.lastName});
-                                  setState(() {
-                                    isNotMeetingCreated = false;
-                                  });
-                                  print(result.id);
-
-                                }
-                                else {
-                                  print('Error');
-                                }
-                              },
-                              child: Text('Create meeting')),
-
-                        ]
-
-                        ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 20,),
-                  ],
                 )
             )
-        )
     );
+  }
+
+  Future<void> createMeetingAction(UserDataModel userData, BuildContext context) async {
+     if (_formKey.currentState.validate()) {
+      classroom = _classroomNameController.text.trim();
+      title = _meetingTitleController.text.trim();
+      // date = _dateController.text.trim();
+      String fcmToken =  await FirebaseMessaging.instance.getToken();
+      result = await FirebaseFirestore.instance.collection('meetings').add(
+          {
+            'classroom': classroom,
+            'date': date,
+            'title': title,
+            // 'participants': FieldValue.arrayUnion([userData.uid]),
+            'participants': FieldValue.arrayUnion([{
+              'fcmToken': fcmToken,
+              'UserName': userData.firstName + ' ' + userData.lastName
+            }]),
+            'participantsId': FieldValue.arrayUnion([userData.uid]),
+            'teacherID': userData.uid,
+            'isActive': true,
+            'teacherName': userData.firstName + ' ' + userData.lastName
+          }
+      );
+      await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(result.id).set({'title': title, 'date': date, 'classroom': classroom, 'teacherName': userData.firstName + ' '+ userData.lastName});
+      setState(() {
+        isNotMeetingCreated = false;
+      });
+      print(result.id);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Meeting created"),
+        duration: Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () { },
+        ),
+      ));
+    }
+    else {
+      print('Error');
+    }
   }
 }
 
