@@ -80,6 +80,14 @@ class MeetingSummary extends StatelessWidget {
         userData.uid,
       ));
       await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('You have joined to the meeting!'),
+        duration: Duration(seconds: 2),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: () { },
+        ),
+      ));
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
     else {
