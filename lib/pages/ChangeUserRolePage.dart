@@ -42,7 +42,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                   Expanded( flex: 1, child: RoundedText(text: 'Edit', roundedSide: 'right', width: 0.4 * size.width, height: 0.1 * size.height, alignment: Alignment.centerLeft)),
                   Visibility(
                     visible: isUserSearched,
-                    replacement: Expanded( flex: 3,
+                    replacement: Expanded( flex: 5,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -79,7 +79,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                                       hintText: 'First Name',
                                       multiValidator: MultiValidator([
                                         RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),])),
-                                  SizedBox(height: 10),
+                                  SizedBox(height: 0.01*size.height),
                                   MyInput(
                                       controller: _lastNameController,
                                       hintText: 'Last Name',
@@ -97,7 +97,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                                   }, alignment: Alignment.centerRight, smallButton: true, icon: Icons.refresh),
                             ],)],),),
                     child: Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: Form(
                           key: _formKey,
                           child: Column(
