@@ -1,54 +1,39 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-import '../SizeConfig.dart';
 
 class RoundedText extends StatelessWidget {
   final String _text;
   final String _roundedSide;
-  final int _screenPercentageHeight;
-  final int _screenPercentageWidth;
-  const RoundedText({Key key, @required String text, @required String roundedSide, @required int screenPercentageHeight, @required int screenPercentageWidth}) : _text = text, _roundedSide = roundedSide, _screenPercentageHeight = screenPercentageHeight, _screenPercentageWidth = screenPercentageWidth, super(key: key);
+  final double _width;
+  final Alignment _alignment;
+  const RoundedText({Key key, @required String text, @required String roundedSide,@required double width, @required Alignment alignment}) : _text = text, _roundedSide = roundedSide, _width = width, _alignment = alignment, super(key: key);
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    int textSize = 4;
-    if(_text.length >= 18){
-      textSize = 3;
-    }
-    return _roundedSide == 'right' ? Container(
-      height: SizeConfig.safeBlockVertical * _screenPercentageHeight,
-      width: SizeConfig.safeBlockHorizontal * _screenPercentageWidth,
+    var size = MediaQuery.of(context).size;
+    var isPortrait = Orientation.portrait == MediaQuery.of(context).orientation;
+    return Align(alignment: _alignment, child:
+    Container(
+      width: _width,
       decoration: BoxDecoration(
         color: theme.colorScheme.background,
-        borderRadius: BorderRadius.horizontal(
-            right: Radius.circular(45.0)
-        ),
+        borderRadius: _roundedSide =='right' ? BorderRadius.horizontal(right: Radius.circular(45.0)) : BorderRadius.horizontal(left: Radius.circular(45.0)),
         boxShadow: [
           BoxShadow(
-              color: Color.fromRGBO(112, 35, 238, 0.7),
-              blurRadius: 5.0),
+              color: theme.colorScheme.primary,
+              spreadRadius: 3,
+              blurRadius: 8.0
+          ),
         ],
       ),
       padding: EdgeInsets.all(10.0),
-      child: Center(child: Text(_text,style: TextStyle(fontSize: textSize * SizeConfig.safeBlockVertical, color: theme.colorScheme.primary))),
-    ) : Container(
-      height: SizeConfig.safeBlockVertical * _screenPercentageHeight,
-      width: SizeConfig.safeBlockHorizontal * _screenPercentageWidth,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.background,
-        borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(45.0)
-        ),
-        boxShadow: [
-          BoxShadow(
-              color: Color.fromRGBO(112, 35, 238, 0.7),
-              blurRadius: 5.0),
-        ],
+      child: Center(child:
+      // Text(_text,style: TextStyle(fontSize: isPortrait ? 0.04*size.height : 0.08*size.height, color: theme.colorScheme.onBackground))
+        AutoSizeText('$_text',style: TextStyle(fontSize: isPortrait ? 0.04*size.height : 0.04*size.height),maxLines: 1,)
       ),
-      padding: EdgeInsets.all(10.0),
-      child: Center(child: Text(_text,style: TextStyle(fontSize: textSize * SizeConfig.safeBlockVertical, color: theme.colorScheme.primary))),
     )
-    ;
+    );
   }
 }
 

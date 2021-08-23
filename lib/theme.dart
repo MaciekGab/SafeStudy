@@ -32,13 +32,13 @@ class CustomTheme {
         fillColor: Colors.white,
         hintStyle: TextStyle(color: Color(0xFF9575CD)),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Color(0xFF9575CD), width: 1.5)),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Color(0xFF9575CD), width: 2)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(15),
             borderSide: BorderSide(color: Color(0xFF9575CD), width: 2))),
   );
 
@@ -70,15 +70,15 @@ class CustomTheme {
         fillColor: Colors.black,
         hintStyle: TextStyle(color: Color(0xFF673AB7)),
         enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
             borderSide:
                 BorderSide(color: Color(0xFF673AB7), width: 1.5)),
         border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
             borderSide:
                 BorderSide(color: Color(0xFF673AB7), width: 2)),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(30),
             borderSide:
                 BorderSide(color: Colors.deepPurple.shade700, width: 2))
     ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 
 import '../Utils.dart';
 
@@ -21,9 +22,12 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
   bool isUserSearched = false;
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        body: SafeArea(
-            child: Center(
+    return  SafeArea(
+        child: Scaffold(
+          appBar: GradientAppBar(
+            title: Text('Edit User'),
+          ),
+            body: Center(
                 child: Column(children: [
                   Form(key: _formKey,
                       child: Column(

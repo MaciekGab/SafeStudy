@@ -2,8 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
+import 'package:test_auth_with_rolebased_ui/models/PastMeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
+import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/ListContainer.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/MeetingTile.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 
 class SettingsPage extends StatelessWidget {
   final auth = FirebaseAuth.instance;
@@ -11,48 +17,84 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
+    var size = MediaQuery.of(context).size;
+    var isPortrait = Orientation.portrait == MediaQuery.of(context).orientation;
     if(userData!=null){
-      return Scaffold(
-          body: SafeArea(
-              child: Center(
-                  child: Column(children: [
-                    Text(userData.firstName + ' ' + userData.lastName + ' ' + userData.email),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          context.read<AuthService>().singOut();
-                        },
-                        child: Text('SignOut')),
-                    Text('Your meetings history:'),
-                    FutureBuilder(
-                      future: getMeetings(context),
-                      builder: (_, snapshot) {
-                        if(snapshot.hasData){
-                          return ListView.builder(
-                            shrinkWrap: true,
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (_,index) {
-                                return ListTile(
-                                  title: Text(snapshot.data[index]['title']),
-                                );
-                              });
-                        }
-                        else if (snapshot.hasError) {
-                          return Text("Couldn't load data: ${snapshot.error}");
-                        }
-                        else{
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },),
-                  ]))));
-
+      return SafeArea(
+          child: Scaffold(
+            appBar: GradientAppBar(
+              title: Text('Profile')
+            ),
+              body: Column(
+                  children: [
+                    Expanded(child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(),
+                    RoundedText(text: '${userData.firstName} ${userData.lastName}', roundedSide: 'left',width: 0.8*size.width,alignment: Alignment.centerRight,),
+                    RoundedElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              context.read<AuthService>().singOut();
+                            },
+                            alignment: Alignment.centerRight,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(' Sign Out '),
+                                Icon(Icons.logout),
+                              ],
+                            )
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(left:20.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text('Your meetings history:'),
+                    )
+                  ],
+              )),
+                    Expanded(
+                      flex: isPortrait ? 3 : 1,
+                      child: ListContainer(
+                          child: FutureBuilder(
+                            future: getPastMeetings(context),
+                            builder: (_, snapshot) {
+                              if(snapshot.hasData){
+                                if(snapshot.data.length == 0)
+                                  return Container(width: size.width,child: Center(child: Text('No meeting history!')));
+                                return ListView.builder(
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (_,index) {
+                                      return BuildMeetingTile(meeting: snapshot.data[index]);
+                                    });
+                              }
+                              else if (snapshot.hasError) {
+                                return Text("Couldn't load data: ${snapshot.error}");
+                              }
+                              else{
+                                return Center(child: CircularProgressIndicator());
+                              }
+                            },),
+                        ),
+                      ),
+                  ]))
+      );
     }
     else
       return Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getMeetings(BuildContext context) async{
-    var querySnapshot =  await FirebaseFirestore.instance.collection('profiles').doc(Provider.of<UserDataModel>(context).uid).collection('pastMeetings').get();
-    return querySnapshot.docs;
+  Future<List<PastMeetingDataModel>> getPastMeetings(BuildContext context) async {
+    List<PastMeetingDataModel> test = [];
+    QuerySnapshot testing;
+    await FirebaseFirestore.instance.collection('profiles')
+        .doc(Provider.of<UserDataModel>(context).uid)
+        .collection('pastMeetings')
+        .get()
+        .then((value) => testing = value);
+    testing.docs.forEach((element) {
+      test.add(PastMeetingDataModel.fromFirestore(element));
+    });
+    return test;
   }
 }

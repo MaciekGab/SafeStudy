@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
 import 'package:test_auth_with_rolebased_ui/Utils.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
+import '../backgroundGradient.dart';
 import 'SignUpPage.dart';
 
 class SignInPage extends StatefulWidget {
@@ -22,6 +24,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    var size = MediaQuery.of(context).size;
     return SafeArea(
       child: Container(
         decoration: buildBoxDecoration(theme),
@@ -35,22 +38,36 @@ class _SignInPageState extends State<SignInPage> {
                     child: Column(
                       mainAxisSize: MainAxisSize.max,
                         children: [
-                          SizedBox(height: 350,),
+                          SizedBox(height: 0.22 * size.height,),
+                          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            Text(
+                              "Safe Study",
+                              style: TextStyle(
+                                  fontSize: 56,
+                                  color: theme.colorScheme.primary),
+                            ),
+                          ]),
+                          SizedBox(height: 0.20 * size.height,),
                           MyInput(controller: _emailController, hintText: 'Email',multiValidator: MultiValidator([
                             RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
                             EmailValidator(errorText: returnValidationError(ValidationError.invalidEmail))
                           ]),),
-                          const SizedBox(height: 10.0),
+                          SizedBox(height: 10.0),
                           MyInput(obscureText: true,controller: _passwordController, hintText: 'Password',multiValidator: MultiValidator([
                             RequiredValidator(errorText: returnValidationError(ValidationError.isRequired)),
                             MinLengthValidator(6, errorText: returnValidationError(ValidationError.shortPassword)),
                             PatternValidator(passwordRegex, errorText: returnValidationError(ValidationError.weakPassword))
                           ]),),
-                          ElevatedButton(
-                              onPressed: () async {
-                                await signInAction();
-                              },
-                              child: Text('SignIn')),
+                          SizedBox(height: 0.005 * size.height,),
+                          RoundedElevatedButton(alignment: Alignment.centerRight, onPressed: () async {
+                            await signInAction();
+                          }, child:Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(' Sign In '),
+                              Icon(Icons.login),
+                            ],
+                          ),),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -60,9 +77,7 @@ class _SignInPageState extends State<SignInPage> {
                                     Navigator.push(context,
                                         MaterialPageRoute(builder: (context) => SignUpPage()));
                                   },
-                                  child: Text(
-                                    "Sign up",
-                                    style: TextStyle(color: Color.fromRGBO(112, 35, 238, 1)),
+                                  child: Text('Sign up', style: TextStyle(color: theme.colorScheme.primaryVariant),
                                   ))
                             ],
                           ),
@@ -74,23 +89,6 @@ class _SignInPageState extends State<SignInPage> {
           ),
         ),
     );
-  }
-
-  BoxDecoration buildBoxDecoration(ThemeData theme) {
-    return BoxDecoration(
-          gradient: LinearGradient(
-              tileMode: TileMode.clamp,
-              begin: Alignment.bottomLeft,
-              end: Alignment.topRight,
-              stops: [0.1,0.25,0.5],
-              colors: [
-                theme.colorScheme.primary,
-// theme.colorScheme.secondary,
-                theme.colorScheme.secondary,
-                theme.colorScheme.background,
-              ]
-          )
-      );
   }
 
   Future signInAction() async{

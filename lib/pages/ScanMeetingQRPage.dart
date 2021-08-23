@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/pages/JoinMeetingPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 
 class ScanMeetingQRPage  extends StatefulWidget {
   @override
@@ -29,9 +30,12 @@ class _ScanMeetingQRPageState extends State<ScanMeetingQRPage> {
   @override
   Widget build(BuildContext context) {
     var user = Provider.of<User>(context);
-    return  Scaffold(
-        body: SafeArea(child:
-        Center(
+    return  SafeArea(
+        child: Scaffold(
+            appBar: GradientAppBar(
+              title: Text('Join Meeting'),
+            ),
+          body: Center(
           child: Column(
             children: [
               ElevatedButton(child: Text('Scan'),

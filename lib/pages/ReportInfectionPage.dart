@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import '../Utils.dart';
 import '../services/NotificationService.dart';
 
@@ -24,9 +25,12 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
   @override
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
-    return Scaffold(
-        body: SafeArea(child:
-        Center(
+    return SafeArea(
+        child: Scaffold(
+          appBar: GradientAppBar(
+            title: Text('Report Infection'),
+          ),
+          body: Center(
           child: Column(
             children: [
               ElevatedButton(
@@ -53,9 +57,6 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
                     names.forEach((element) {
                       dataSet.add(element.fcmToken);
                     });
-                    // for (int i = 0; i < names.length; i++) {
-                    //   dataSet.add(names[i].fcmToken);
-                    // }
                     counter++;
                   });
                   String fcmUserToken = await FirebaseMessaging.instance
@@ -68,22 +69,6 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
                   print('Length of list to send notification: $value');
                   print('Docs returned: $counter');
                 }
-                // await FirebaseFirestore.instance.collection('reports').add(
-                //       {
-                //         'reporterName': userData.firstName + ' ' + userData.lastName,
-                //         //TODO: change date to actual date not hardcoded value
-                //         'dateOfInfection': dateToCompare,
-                //         'reportDate': DateTime.now(),
-                //         //TODO: change hardcoded value to boolean from sending notification
-                //         'isNotificationSent': true,
-                //         // 'participants': FieldValue.arrayUnion([userData.uid]),
-                //         'peopleToNotify': dataSet.toList(),
-                //         'reporterId': userData.uid,
-                //       }
-                //   );
-                // final response = await NotificationService.sendTo(title: 'Warning', body: 'You have had contact with an infected person!', fcmTokens: usersToNotify);
-                // print('Notification response code is: ${response.statusCode}');
-                // print('Notification response code is: ${response.body}');
                 return showDialog<String>(
                     barrierDismissible: false,
                   context: context,

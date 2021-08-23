@@ -23,7 +23,10 @@ class MyInput extends StatelessWidget {
     else
       _toObscure = true;
 
-    return TextFormField(
+    return
+      Container(
+        margin: const EdgeInsets.only(left:10.0, right: 10.0),
+      child: TextFormField(
         // style: theme.textTheme.bodyText1,
         controller: _controller,
         obscureText: _toObscure,
@@ -31,6 +34,6 @@ class MyInput extends StatelessWidget {
           hintText: _hintText,
         ),
         validator: _multiValidator
-    );
+    ));
   }
 }

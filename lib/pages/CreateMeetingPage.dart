@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/Utils.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'ShowMeetingQRPage.dart';
 
 class CreateMeetingPage extends StatefulWidget {
@@ -27,9 +28,12 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
   @override
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
-    return  Scaffold(
-        body: SafeArea(
-            child: Center(
+    return  SafeArea(
+        child: Scaffold(
+            appBar: GradientAppBar(
+              title: Text('Create Meeting'),
+            ),
+            body: Center(
                 child: Column(
                   children: [
                     Visibility(

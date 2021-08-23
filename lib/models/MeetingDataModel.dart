@@ -41,18 +41,6 @@ class MeetingDataModel {
     );
   }
 
-//   Map<String, dynamic> participantsList(String participantUID, String userName, String fcmToken){
-//       return {
-//         'participants': FieldValue.arrayUnion([
-//           {
-//             'UID': participantUID,
-//             'UserName': userName,
-//             'FcmToken': fcmToken
-//           }
-//         ])
-//       };
-//   }
-// }
   Map<String, dynamic> participantsList(String fcmToken,
       String userName) {
     return {
@@ -71,12 +59,14 @@ class MeetingDataModel {
     };
   }
 }
+
 class ParticipantsDataModel {
   final String fcmToken;
   final String userName;
 
   ParticipantsDataModel({this.fcmToken, this.userName});
 }
+
 class ParticipantsIdDataModel{
   final String uid;
 

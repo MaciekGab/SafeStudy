@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 
 class ShowMeetingQRPage extends StatelessWidget {
   final String meetingID;
@@ -10,8 +11,12 @@ class ShowMeetingQRPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      body: SafeArea(child: Column(
+    return SafeArea(
+      child: Scaffold(
+        appBar: GradientAppBar(
+          title: Text('Meeting QR'),
+        ),
+        body: Column(
         children: [
           Center(
             child: QrImage(

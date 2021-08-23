@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/services/CreatePdfFileService.dart';
+import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 
 class MeetingDetailPage extends StatelessWidget {
   final MeetingDataModel meeting;
@@ -17,9 +18,12 @@ class MeetingDetailPage extends StatelessWidget {
     Timestamp dateToParse = meeting.date;
     DateTime date = dateToParse.toDate();
     CreatePdfFile createPdfFile = CreatePdfFile(meeting: meeting);
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
+    return SafeArea(
+      child: Scaffold(
+        appBar: GradientAppBar(
+        title: Text('Meeting Detail'),
+      ),
+        body: Center(
           child: Column(
             children: [
               ElevatedButton(onPressed: () async{
