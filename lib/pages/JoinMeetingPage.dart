@@ -71,15 +71,8 @@ class MeetingSummary extends StatelessWidget {
 
     if (meetingData.isActive) {
       String messageToken =  await FirebaseMessaging.instance.getToken();
-      await FirebaseFirestore.instance.collection('meetings').doc(
-          meetingID).update(meetingData.participantsList(
-          messageToken,
-          userData.firstName + ' ' + userData.lastName,
-      ));
-      await FirebaseFirestore.instance.collection('meetings').doc(
-          meetingID).update(meetingData.participantsIdList(
-        userData.uid,
-      ));
+      await FirebaseFirestore.instance.collection('meetings').doc(meetingID).update(meetingData.joinMeeting(messageToken,userData.firstName + ' ' + userData.lastName,userData.uid));
+
       await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(successfulJoin),

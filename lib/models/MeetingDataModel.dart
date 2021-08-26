@@ -41,20 +41,14 @@ class MeetingDataModel {
     );
   }
 
-  Map<String, dynamic> participantsList(String fcmToken,
-      String userName) {
+  Map<String, dynamic> joinMeeting(String fcmToken,String userName, String uid){
     return {
       'participants': FieldValue.arrayUnion([
         {
           'fcmToken': fcmToken,
           'UserName': userName,
         }
-      ])
-    };
-  }
-
-  Map<String, dynamic> participantsIdList(String uid) {
-    return {
+      ]),
       'participantsId': FieldValue.arrayUnion([uid])
     };
   }
