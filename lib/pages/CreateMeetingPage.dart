@@ -93,14 +93,12 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
      if (_formKey.currentState.validate()) {
       classroom = _classroomNameController.text.trim();
       title = _meetingTitleController.text.trim();
-      // date = _dateController.text.trim();
       String fcmToken =  await FirebaseMessaging.instance.getToken();
       result = await FirebaseFirestore.instance.collection('meetings').add(
           {
             'classroom': classroom,
             'date': date,
             'title': title,
-            // 'participants': FieldValue.arrayUnion([userData.uid]),
             'participants': FieldValue.arrayUnion([{
               'fcmToken': fcmToken,
               'UserName': userData.firstName + ' ' + userData.lastName
@@ -117,7 +115,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
       });
       print(result.id);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Meeting created"),
+        content: Text(meetingCreated),
         duration: Duration(seconds: 2),
         action: SnackBarAction(
           label: 'OK',

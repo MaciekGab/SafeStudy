@@ -16,10 +16,7 @@ class MeetingDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    List<ParticipantsDataModel> names = List<ParticipantsDataModel>.from(meeting.participants.map((item) {
-      return new ParticipantsDataModel(
-          fcmToken: item['fcmToken'],
-          userName: item['UserName']); }));
+    List<ParticipantsDataModel> names = List<ParticipantsDataModel>.from(meeting.participants);
     names.removeAt(0);
     Timestamp dateToParse = meeting.date;
     DateTime date = dateToParse.toDate();

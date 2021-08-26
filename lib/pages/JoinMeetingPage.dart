@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:test_auth_with_rolebased_ui/Utils.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
@@ -81,7 +82,7 @@ class MeetingSummary extends StatelessWidget {
       ));
       await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('You have joined to the meeting!'),
+        content: Text(successfulJoin),
         duration: Duration(seconds: 2),
         action: SnackBarAction(
           label: 'OK',
@@ -92,7 +93,7 @@ class MeetingSummary extends StatelessWidget {
     }
     else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Couldn't join. Meeting may have ended"),
+        content: Text(unsuccessfulJoin),
         duration: Duration(seconds: 2),
         action: SnackBarAction(
           label: 'OK',

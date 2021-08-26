@@ -72,5 +72,11 @@ Future<DateTime> pickDateAndTime(BuildContext context,DateTime date) async{
   }
 }
 
-final String titleOfWaring = 'Warning';
+final String titleOfWaring = 'Warning!';
 final String bodyOfWaring = 'You have had contact with an infected person!';
+final String meetingCreated = 'Meeting created!';
+final String successfulSent = 'The information has been sent.';
+final String unsuccessfulSent = "Couldn't send information. Please try again.";
+final String successfulJoin = 'You have joined to the meeting!';
+final String unsuccessfulJoin = "Couldn't join. Meeting may have ended.";
+final String successfulUserUpdate = 'User has been updated!';

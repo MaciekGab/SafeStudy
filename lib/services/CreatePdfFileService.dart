@@ -28,7 +28,6 @@ class CreatePdfFile {
 
     document.addPage(MultiPage(
         build: (context) => [
-          // createTitle(title: ),
           createMeetingDetails(title: meeting.title,date: formattedDateOfMeeting, hour: formattedHourOfMeeting, classroom: meeting.classroom, teacherName: meeting.teacherName),
           createAttendanceList(attendanceList: meeting.participants)
         ],
@@ -63,11 +62,8 @@ class CreatePdfFile {
     );
   }
 
-  static Widget createAttendanceList({attendanceList}) {
-    List<ParticipantsDataModel> names = List<ParticipantsDataModel>.from(attendanceList.map((item) {
-      return new ParticipantsDataModel(
-          fcmToken: item['fcmToken'],
-          userName: item['UserName']); }));
+  static Widget createAttendanceList({List<ParticipantsDataModel> attendanceList}) {
+    List<ParticipantsDataModel> names = List<ParticipantsDataModel>.from(attendanceList);
     names.removeAt(0);
     final headers = [
       'Attendance List'

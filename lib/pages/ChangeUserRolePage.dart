@@ -136,7 +136,7 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
       'lastName': last,
     });
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("User updated!"),
+      content: Text(successfulUserUpdate),
       duration: Duration(seconds: 2),
       action: SnackBarAction(
         label: 'OK',

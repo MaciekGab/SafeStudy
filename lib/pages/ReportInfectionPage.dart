@@ -23,6 +23,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
   var db = FirebaseFirestore.instance;
   DateTime dateOfInfection = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   Set<String> dataSet = {};
+  List<MeetingDataModel> listOfMeetings = [];
   List<String> usersToNotify;
   Timestamp dateToCompare;
   @override
@@ -58,6 +59,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
 
   Future<void> repostAction(UserDataModel userData, BuildContext context) async {
     dataSet = {};
+    listOfMeetings = [];
     dateToCompare = Timestamp.fromDate(dateOfInfection);
     var result = await db.collection('meetings').where('participantsId',arrayContains: userData.uid).where('date', isGreaterThanOrEqualTo: dateToCompare).get();
     if(result.size != 0) {
@@ -65,17 +67,10 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
       print(result.docs[0]['date']);
       print(dateToCompare);
       result.docs.forEach((element) {
-        print("title = ${element['title']}");
-        List<ParticipantsDataModel> names = List<ParticipantsDataModel>.from(element['participants'].map((item) {
-          return new ParticipantsDataModel(
-              fcmToken: item['fcmToken'],
-              userName: item['UserName']);
-        }));
-        names.forEach((element) {
-          dataSet.add(element.fcmToken);
-        });
+        listOfMeetings.add(MeetingDataModel.fromMap(element.data()));
         counter++;
       });
+      listOfMeetings.forEach((element) {element.participants.forEach((value) { dataSet.add(value.fcmToken);});});
       String fcmUserToken = await FirebaseMessaging.instance
           .getToken();
       dataSet.remove(fcmUserToken);
@@ -131,7 +126,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
     print('Notification response code is: ${response.statusCode}');
     print('Notification response code is: ${response.body}');
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: response.statusCode == 200 ? Text("Information send.") : Text("Couldn't send information. Please try again."),
+      content: response.statusCode == 200 ? Text(successfulSent) : Text(unsuccessfulSent),
       duration: Duration(seconds: 2),
       action: SnackBarAction(
         label: 'OK',

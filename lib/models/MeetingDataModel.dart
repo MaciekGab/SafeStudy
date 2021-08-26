@@ -7,8 +7,8 @@ class MeetingDataModel {
   String teacherName;
   String title;
   bool isActive;
-  List<dynamic> participants;
-  List<dynamic> participantsId;
+  List<ParticipantsDataModel> participants;
+  List<ParticipantsIdDataModel> participantsId;
 
   MeetingDataModel(
       {this.classroom, this.date, this.teacherID, this.title, this.participants,this.participantsId ,this.teacherName, this.isActive});
@@ -19,8 +19,8 @@ class MeetingDataModel {
         date: data['date'] ?? '',
         teacherID: data['teacherID'] ?? '',
         title: data['title'] ?? 'user',
-        participants: data['participants'] ?? '',
-        participantsId: data['participantsId'] ?? '',
+        participants: List<ParticipantsDataModel>.from(data['participants'].map((item) => ParticipantsDataModel( fcmToken: item['fcmToken'], userName: item['UserName']))) ?? '',
+        participantsId: List<ParticipantsIdDataModel>.from(data['participantsId'].map((item) => ParticipantsIdDataModel(uid: item))) ?? '',
         teacherName: data['teacherName'] ?? '',
         isActive: data['isActive'] ?? ''
     );
@@ -34,8 +34,8 @@ class MeetingDataModel {
         date: data['date'] ?? '',
         teacherID: data['teacherID'] ?? '',
         title: data['title'] ?? 'user',
-        participants: data['participants'] ?? '',
-        participantsId: data['participantsId'] ?? '',
+        participants: List<ParticipantsDataModel>.from(data['participants'].map((item) => ParticipantsDataModel( fcmToken: item['fcmToken'], userName: item['UserName']))) ?? '',
+        participantsId: List<ParticipantsIdDataModel>.from(data['participantsId'].map((item) => ParticipantsIdDataModel(uid: item))) ?? '',
         teacherName: data['teacherName'] ?? '',
         isActive: data['isActive'] ?? ''
     );
@@ -70,5 +70,5 @@ class ParticipantsDataModel {
 class ParticipantsIdDataModel{
   final String uid;
 
-  ParticipantsIdDataModel(this.uid);
+  ParticipantsIdDataModel({this.uid});
 }
