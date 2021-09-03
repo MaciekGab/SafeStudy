@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
@@ -20,10 +19,10 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final db = DatabaseService();
+  final _db = DatabaseService();
   String email = '', firstName = '', lastName = '', role = '', uid = '';
   bool isUserSearched = true;
-  List<bool> isSelected = [true, false, false];
+  List<bool> isSelected = [false, false, false];
   final List<String> roles = ['admin', 'teacher', 'user'];
   String title = 'Edit';
   @override
@@ -93,7 +92,9 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                                       isUserSearched = true;
                                     });}, alignment: Alignment.centerLeft, smallButton: true, icon: Icons.search_rounded),
                               RoundedElevatedButton(child: Text(' Update '), onPressed: () async {
-                                    await updateUserAction();
+                                    if(_formKey2.currentState.validate()) {
+                                      await updateUserAction();
+                                    }
                                   }, alignment: Alignment.centerRight, smallButton: true, icon: Icons.refresh),
                             ],)],),),
                     child: Expanded(
@@ -114,8 +115,10 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
                               ),
                               SizedBox(),
                               RoundedElevatedButton(child: Text(' Search '), onPressed: () async {
+                                  if(_formKey.currentState.validate()) {
                                     await searchUserAction();
-                                  }, alignment: Alignment.centerRight, smallButton: true, icon: Icons.search_rounded),
+                                  }
+                                }, alignment: Alignment.centerRight, smallButton: true, icon: Icons.search_rounded),
                             ],
                           )),
                     ),
@@ -127,48 +130,37 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
     String name = _firstNameController.text.trim();
     String last = _lastNameController.text.trim();
     print(uid + ' : role = ' + roles[isSelected.indexOf(true)]);
-    await FirebaseFirestore.instance
-        .collection('profiles')
-        .doc(uid)
-        .update({
-      'role': roles[isSelected.indexOf(true)],
-      'firstName': name,
-      'lastName': last,
-    });
+    await _db.editUserData(uid,roles[isSelected.indexOf(true)],name,last);
+    _showSnackBar(successfulUserUpdate);
+  }
+
+  Future<void> searchUserAction() async {
+    isSelected = [false, false, false];
+    String userEmail = _emailController.text.trim();
+    print(userEmail);
+    final result = await _db.getUserByEmail(userEmail);
+    if(result != null){
+      setState(() {
+        isUserSearched = false;
+        uid = result.uid;
+        _firstNameController.text = result.firstName;
+        _lastNameController.text = result.lastName;
+        isSelected[roles.indexOf(result.role)] = true;
+      });
+    }
+    else{
+      _showSnackBar(couldNotFindUser);
+    }
+  }
+
+  void _showSnackBar(String text){
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(successfulUserUpdate),
+      content: Text(text),
       duration: Duration(seconds: 2),
       action: SnackBarAction(
         label: 'OK',
         onPressed: () { },
       ),
     ));
-  }
-
-  Future<void> searchUserAction() async {
-    String userEmail = _emailController.text.trim();
-    print(userEmail);
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('profiles')
-        .where('email', isEqualTo: userEmail)
-        .get();
-    if (querySnapshot.size > 0) {
-      var oneSet = querySnapshot.docs[0];
-      print(oneSet.data().toString());
-      setState(() {
-        isUserSearched = false;
-        uid = querySnapshot.docs[0]['uid'];
-        _firstNameController.text = querySnapshot.docs[0]['firstName'];
-        _lastNameController.text = querySnapshot.docs[0]['lastName'];
-        role = querySnapshot.docs[0]['role'];
-        if (querySnapshot.docs[0]['role'] == 'admin') {
-          isSelected = [true, false, false];
-        } else if (querySnapshot.docs[0]['role'] == 'teacher') {
-          isSelected = [false, true, false];
-        } else {
-          isSelected = [false, false, true];
-        }
-      });
-    }
   }
 }

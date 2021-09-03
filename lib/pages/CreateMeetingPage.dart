@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -7,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/Utils.dart';
+import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
@@ -24,8 +24,8 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _meetingTitleController = TextEditingController();
   final TextEditingController _classroomNameController = TextEditingController();
-  DocumentReference<Map<String, dynamic>> result;
-  String classroom,title;
+  var _db = DatabaseService();
+  String classroom,title,result;
   DateTime date = DateTime.now();
   bool isNotMeetingCreated = true;
   @override
@@ -44,7 +44,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                       RoundedElevatedButton(child: Text('Show Meeting QR'), onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) =>
-                                ShowMeetingQRPage(meetingID: result.id)));
+                                ShowMeetingQRPage(meetingID: result)));
                       }, alignment: Alignment.center, smallButton: false, icon: Icons.qr_code_rounded,width: 0.7* size.width,height: 0.1*size.height,),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -76,7 +76,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
                               ),
                               SizedBox(height: 0.01*size.height,),
                               RoundedElevatedButton(onPressed: () async{
-                                await createMeetingAction(userData, context);
+                                await _createMeetingAction(userData, context);
                               },child: Text(' Create '),icon: Icons.check,smallButton: true,alignment: Alignment.centerRight,),
                             ]
                             ),
@@ -89,31 +89,17 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
     );
   }
 
-  Future<void> createMeetingAction(UserDataModel userData, BuildContext context) async {
+  Future<void> _createMeetingAction(UserDataModel userData, BuildContext context) async {
      if (_formKey.currentState.validate()) {
       classroom = _classroomNameController.text.trim();
       title = _meetingTitleController.text.trim();
       String fcmToken =  await FirebaseMessaging.instance.getToken();
-      result = await FirebaseFirestore.instance.collection('meetings').add(
-          {
-            'classroom': classroom,
-            'date': date,
-            'title': title,
-            'participants': FieldValue.arrayUnion([{
-              'fcmToken': fcmToken,
-              'UserName': userData.firstName + ' ' + userData.lastName
-            }]),
-            'participantsId': FieldValue.arrayUnion([userData.uid]),
-            'teacherID': userData.uid,
-            'isActive': true,
-            'teacherName': userData.firstName + ' ' + userData.lastName
-          }
-      );
-      await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(result.id).set({'title': title, 'date': date, 'classroom': classroom, 'teacherName': userData.firstName + ' '+ userData.lastName});
+      result = await _db.createMeeting(classroom,date,title,fcmToken,userData.firstName + ' ' + userData.lastName,userData.uid,true);
+      await _db.updatePastMeetings(userData.uid, result, title, date, classroom, userData.firstName + ' '+ userData.lastName);
       setState(() {
         isNotMeetingCreated = false;
       });
-      print(result.id);
+      print(result);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(meetingCreated),
         duration: Duration(seconds: 2),

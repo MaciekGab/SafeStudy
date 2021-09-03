@@ -55,5 +55,4 @@ class AuthService {
   Future<void> reloadData() async {
     await _auth.currentUser.reload();
   }
-// it delete user from Auth in firebase :/
 }

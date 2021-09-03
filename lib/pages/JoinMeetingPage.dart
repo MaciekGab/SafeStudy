@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -15,25 +14,23 @@ import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 class JoinMeetingPage extends StatelessWidget {
   final String meetingID;
   JoinMeetingPage({Key key, @required this.meetingID}) : super(key: key);
-  final db = DatabaseService();
+  final _db = DatabaseService();
 
   @override
   Widget build(BuildContext context) {
       return StreamProvider<MeetingDataModel>.value(
-            value: db.streamMeetingData(meetingID),
+            value: _db.streamMeetingData(meetingID),
             child: MeetingSummary(meetingID: meetingID));
     }
   }
 
 class MeetingSummary extends StatelessWidget {
   final String meetingID;
-  const MeetingSummary({
-    Key key,
-    @required this.meetingID
-  }) : super(key: key);
-
+  MeetingSummary({Key key, @required this.meetingID}) : super(key: key);
+  var _db = DatabaseService();
   @override
   Widget build(BuildContext context) {
+
     var userData = Provider.of<UserDataModel>(context);
     var meetingData = Provider.of<MeetingDataModel>(context);
     final size = MediaQuery.of(context).size;
@@ -71,9 +68,8 @@ class MeetingSummary extends StatelessWidget {
 
     if (meetingData.isActive) {
       String messageToken =  await FirebaseMessaging.instance.getToken();
-      await FirebaseFirestore.instance.collection('meetings').doc(meetingID).update(meetingData.joinMeeting(messageToken,userData.firstName + ' ' + userData.lastName,userData.uid));
-
-      await FirebaseFirestore.instance.collection('profiles').doc(userData.uid).collection('pastMeetings').doc(meetingID).set({'title': meetingData.title, 'date': meetingData.date, 'classroom': meetingData.classroom, 'teacherName': meetingData.teacherName});
+      await _db.joinMeeting(meetingID, meetingData, messageToken,userData.firstName + ' ' + userData.lastName,userData.uid);
+      await _db.updatePastMeetings(userData.uid,meetingID,meetingData.title,meetingData.date.toDate(),meetingData.classroom,meetingData.teacherName);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(successfulJoin),
         duration: Duration(seconds: 2),

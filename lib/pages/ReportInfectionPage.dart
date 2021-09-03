@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
+import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
@@ -20,7 +21,8 @@ class ReportInfectionPage extends StatefulWidget {
 }
 
 class _ReportInfectionPageState extends State<ReportInfectionPage> {
-  var db = FirebaseFirestore.instance;
+  // var _db = FirebaseFirestore.instance;
+  var _db = DatabaseService();
   DateTime dateOfInfection = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   Set<String> dataSet = {};
   List<MeetingDataModel> listOfMeetings = [];
@@ -61,25 +63,12 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
     dataSet = {};
     listOfMeetings = [];
     dateToCompare = Timestamp.fromDate(dateOfInfection);
-    var result = await db.collection('meetings').where('participantsId',arrayContains: userData.uid).where('date', isGreaterThanOrEqualTo: dateToCompare).get();
-    if(result.size != 0) {
-      int counter = 0;
-      print(result.docs[0]['date']);
-      print(dateToCompare);
-      result.docs.forEach((element) {
-        listOfMeetings.add(MeetingDataModel.fromMap(element.data()));
-        counter++;
-      });
+    await _db.getMeetingsWithInfectedPerson(userData.uid, dateToCompare).then((value) => listOfMeetings = value);
+    if(listOfMeetings.length > 0) {
       listOfMeetings.forEach((element) {element.participants.forEach((value) { dataSet.add(value.fcmToken);});});
-      String fcmUserToken = await FirebaseMessaging.instance
-          .getToken();
+      String fcmUserToken = await FirebaseMessaging.instance.getToken();
       dataSet.remove(fcmUserToken);
       usersToNotify = dataSet.toList();
-      print('data set is: $dataSet');
-      print('data set as list is: $usersToNotify');
-      int value = usersToNotify.length;
-      print('Length of list to send notification: $value');
-      print('Docs returned: $counter');
     }
     return await confirmationDialog(context, userData);
   }
@@ -112,16 +101,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
   }
 
   Future<void> sendNotificationAction(UserDataModel userData, BuildContext context) async {
-    await FirebaseFirestore.instance.collection('reports').add(
-        {
-          'reporterName': userData.firstName + ' ' + userData.lastName,
-          'dateOfInfection': dateToCompare,
-          'reportDate': DateTime.now(),
-          'isNotificationSent': true,
-          'peopleToNotify': dataSet.toList(),
-          'reporterId': userData.uid,
-        }
-    );
+    await _db.reportInfection(userData.firstName + ' ' + userData.lastName, dateToCompare, true, dataSet.toList(), userData.uid);
     final response = await NotificationService.sendTo(title: titleOfWaring, body: bodyOfWaring, fcmTokens: usersToNotify);
     print('Notification response code is: ${response.statusCode}');
     print('Notification response code is: ${response.body}');

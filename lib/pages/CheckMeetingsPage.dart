@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/pages/MeetingDetailPage.dart';
+import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/ListContainer.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MeetingTile.dart';
@@ -20,6 +20,7 @@ class CheckMeetingsPage extends StatefulWidget {
 }
 
 class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
+  var _db = DatabaseService();
   List<MeetingDataModel> _data = [];
   List<MeetingDataModel> _dataToSearch = [];
   String query = '';
@@ -33,7 +34,7 @@ class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
   void initState() {
     super.initState();
     if (role == 'admin')
-      getMeetings().then((value) {
+      _db.getMeetings().then((value) {
         setState(() {
           _data = value;
           _dataToSearch = value;
@@ -41,7 +42,7 @@ class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
         });
       });
     else
-      getMeetingsForTeacher(uid).then((value) {
+      _db.getMeetingsForTeacher(uid).then((value) {
         setState(() {
           _data = value;
           _dataToSearch = value;
@@ -62,7 +63,7 @@ class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
           children: [
             SearchBar(
                 hintText: 'Title or Name or Date(dd-mm-yyyy)',
-                onChanged: searchMeeting ),
+                onChanged: _searchMeeting ),
             Expanded(
                 child: Visibility(
                   visible: flag,
@@ -92,33 +93,7 @@ class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
     );
   }
 
-  Future<List<MeetingDataModel>> getMeetings() async {
-    List<MeetingDataModel> test = [];
-    QuerySnapshot testing;
-    await FirebaseFirestore.instance
-        .collection('meetings')
-        .get()
-        .then((value) => testing = value);
-    testing.docs.forEach((element) {
-      test.add(MeetingDataModel.fromFirestore(element));
-    });
-    return test;
-  }
-
-  Future<List<MeetingDataModel>> getMeetingsForTeacher(String uid) async {
-    List<MeetingDataModel> test = [];
-    QuerySnapshot testing;
-    await FirebaseFirestore.instance
-        .collection('meetings')
-        .where('teacherID', isEqualTo: uid)
-        .get()
-        .then((value) => testing = value);
-    testing.docs.forEach((element) {
-      test.add(MeetingDataModel.fromFirestore(element));
-    });
-    return test;
-  }
-  void searchMeeting(String value) {
+  void _searchMeeting(String value) {
     final meetings = _dataToSearch.where((element) {
       final titleLower = element.title.toLowerCase();
       final teacherLower = element.teacherName.toLowerCase();

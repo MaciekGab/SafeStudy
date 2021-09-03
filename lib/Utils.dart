@@ -80,3 +80,4 @@ final String unsuccessfulSent = "Couldn't send information. Please try again.";
 final String successfulJoin = 'You have joined to the meeting!';
 final String unsuccessfulJoin = "Couldn't join. Meeting may have ended.";
 final String successfulUserUpdate = 'User has been updated!';
+final String couldNotFindUser = "Couldn't find this user.";
