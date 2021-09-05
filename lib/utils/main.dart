@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:test_auth_with_rolebased_ui/theme.dart';
+import 'package:test_auth_with_rolebased_ui/utils/theme.dart';
 import 'package:test_auth_with_rolebased_ui/wrappers/AuthWrapper.dart';
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
 

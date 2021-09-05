@@ -2,7 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:test_auth_with_rolebased_ui/Utils.dart';
+import 'package:test_auth_with_rolebased_ui/utils/Utils.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';

@@ -10,7 +10,7 @@ import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
-import '../Utils.dart';
+import '../utils/Utils.dart';
 import '../services/NotificationService.dart';
 
 class ReportInfectionPage extends StatefulWidget {

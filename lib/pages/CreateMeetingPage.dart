@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
-import 'package:test_auth_with_rolebased_ui/Utils.dart';
+import 'package:test_auth_with_rolebased_ui/utils/Utils.dart';
 import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';

@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
-import 'package:test_auth_with_rolebased_ui/Utils.dart';
+import 'package:test_auth_with_rolebased_ui/utils/Utils.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
-import '../backgroundGradient.dart';
+import '../utils/backgroundGradient.dart';
 import 'SignUpPage.dart';
 
 class SignInPage extends StatefulWidget {

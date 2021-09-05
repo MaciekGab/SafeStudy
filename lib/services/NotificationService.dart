@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-import '../Keys.dart';
+import 'package:test_auth_with_rolebased_ui/utils/Keys.dart';
 
 class NotificationService {
   static final http.Client client = http.Client();

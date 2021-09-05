@@ -10,7 +10,7 @@ import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 
-import '../../SizeConfig.dart';
+import '../../utils/SizeConfig.dart';
 import '../CheckMeetingsPage.dart';
 import '../ReportInfectionPage.dart';
 

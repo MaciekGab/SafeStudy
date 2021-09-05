@@ -6,7 +6,7 @@ import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 
-import '../Utils.dart';
+import '../utils/Utils.dart';
 
 class ChangeUserRolePage extends StatefulWidget {
   @override

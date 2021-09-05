@@ -32,7 +32,7 @@
 /build/
 **/android/
 **/ios/
-lib/Keys.dart
+lib/utils/Keys.dart
 # Web related
 lib/generated_plugin_registrant.dart
 

@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 
 import 'package:test_auth_with_rolebased_ui/pages/SignInPage.dart';
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
-import 'package:test_auth_with_rolebased_ui/Utils.dart';
+import 'package:test_auth_with_rolebased_ui/utils/Utils.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MyInput.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/RoundedElevatedButton.dart';
 
-import '../backgroundGradient.dart';
+import '../utils/backgroundGradient.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key key}) : super(key: key);
