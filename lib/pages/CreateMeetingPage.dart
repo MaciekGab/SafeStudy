@@ -40,12 +40,22 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
             body: Center(
                     child: Visibility(
                       visible: isNotMeetingCreated,
-                      replacement:
-                      RoundedElevatedButton(child: Text('Show Meeting QR'), onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) =>
-                                ShowMeetingQRPage(meetingID: result)));
-                      }, alignment: Alignment.center, smallButton: false, icon: Icons.qr_code_rounded,width: 0.7* size.width,height: 0.1*size.height,),
+                      replacement:Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            RoundedText(text: 'Show QR', roundedSide: 'right', width: 0.8*size.width, height: 0.1*size.height, alignment: Alignment.centerLeft),
+                            RoundedElevatedButton(child: Text('Show Meeting QR'), onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) =>
+                                      ShowMeetingQRPage(meetingID: result)));
+                            }, alignment: Alignment.center, smallButton: false, icon: Icons.qr_code_rounded,width: 0.7* size.width,height: 0.1*size.height,),
+                            SizedBox(height: 0.01*size.height,),
+                            SizedBox(height: 0.01*size.height,)
+                            // Text('QR value: '+ _qrCodeData)
+                          ],
+                        ),
+                      ),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

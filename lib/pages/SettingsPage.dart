@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_auth_with_rolebased_ui/models/PastMeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/services/AuthService.dart';
+import 'package:test_auth_with_rolebased_ui/services/DatabaseService.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/GradientAppBar.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/ListContainer.dart';
 import 'package:test_auth_with_rolebased_ui/widgets/MeetingTile.dart';
@@ -13,6 +13,7 @@ import 'package:test_auth_with_rolebased_ui/widgets/RoundedText.dart';
 
 class SettingsPage extends StatelessWidget {
   final auth = FirebaseAuth.instance;
+  var _db = DatabaseService();
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +54,7 @@ class SettingsPage extends StatelessWidget {
                       flex: isPortrait ? 3 : 1,
                       child: ListContainer(
                           child: FutureBuilder(
-                            future: getPastMeetings(context),
+                            future: getPastMeetingsList(context, userData.uid),
                             builder: (_, snapshot) {
                               if(snapshot.hasData){
                                 if(snapshot.data.length == 0)
@@ -79,18 +80,7 @@ class SettingsPage extends StatelessWidget {
     else
       return Scaffold(body: Center(child: CircularProgressIndicator()));
   }
-
-  Future<List<PastMeetingDataModel>> getPastMeetings(BuildContext context) async {
-    List<PastMeetingDataModel> test = [];
-    QuerySnapshot testing;
-    await FirebaseFirestore.instance.collection('profiles')
-        .doc(Provider.of<UserDataModel>(context).uid)
-        .collection('pastMeetings')
-        .get()
-        .then((value) => testing = value);
-    testing.docs.forEach((element) {
-      test.add(PastMeetingDataModel.fromFirestore(element));
-    });
-    return test;
+  Future<List<PastMeetingDataModel>> getPastMeetingsList(BuildContext context, String uid) async {
+    return await _db.getPastMeetings(uid);
   }
 }

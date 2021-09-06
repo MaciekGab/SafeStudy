@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:test_auth_with_rolebased_ui/models/MeetingDataModel.dart';
+import 'package:test_auth_with_rolebased_ui/models/PastMeetingDataModel.dart';
 import 'package:test_auth_with_rolebased_ui/models/UserDataModel.dart';
 
 class DatabaseService{
@@ -14,13 +15,6 @@ class DatabaseService{
   Future<String> updateUserData(String firstName, String lastName, String role, String email, String uid) async{
     await _db.collection('profiles').doc(uid).set({'firstName': firstName, 'lastName': lastName, 'email': email, 'role': role, 'uid': uid});
     return 'User data has been updated.';
-  }
-  Stream<List<UserDataModel>> getUsers(String email) {
-    return _db.collection('profiles').where('email',isEqualTo: email).snapshots().map((list) => list.docs.map((doc) =>  UserDataModel.fromFirestore(doc)));
-  }
-  Future<UserDataModel> getUsersData(String email) async{
-    var ref =  await _db.collection('profiles').where('email',isEqualTo: email).get();
-    return UserDataModel.fromMap(ref.docs[0].data());
   }
   Future<void> editUserData(String uid, String role, String firstName, String lastName) async{
     await _db.collection('profiles').doc(uid).update({'role': role, 'firstName': firstName, 'lastName': lastName,});
@@ -86,5 +80,14 @@ class DatabaseService{
     List<MeetingDataModel> listOfMeetings = [];
     await _db.collection('meetings').where('participantsId',arrayContains: uid).where('date', isGreaterThanOrEqualTo: dateToCompare).get().then((value) => value.docs.forEach((element) {listOfMeetings.add(MeetingDataModel.fromMap(element.data())); }));
     return listOfMeetings;
+  }
+  Future<List<PastMeetingDataModel>> getPastMeetings(String uid) async{
+    List<PastMeetingDataModel> pastMeetingsList = [];
+    await _db.collection('profiles').doc(uid).collection('pastMeetings').orderBy("date").get()
+        .then((value) => value.docs.forEach((element) {
+          pastMeetingsList.add(PastMeetingDataModel.fromFirestore(element));
+        })
+    );
+    return pastMeetingsList;
   }
 }

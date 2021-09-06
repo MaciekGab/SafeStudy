@@ -32,6 +32,7 @@ class MyInput extends StatelessWidget {
         obscureText: _toObscure,
         decoration: InputDecoration(
           hintText: _hintText,
+          errorMaxLines: 2
         ),
         validator: _multiValidator
     ));
