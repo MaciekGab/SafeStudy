@@ -97,15 +97,12 @@ class _CheckMeetingsPageState extends State<CheckMeetingsPage> {
     final meetings = _dataToSearch.where((element) {
       final titleLower = element.title.toLowerCase();
       final teacherLower = element.teacherName.toLowerCase();
-      DateTime dateTime = element.date.toDate();
-      final date = DateFormat('dd-MM-yyyy').format(dateTime);
+      final date = DateFormat('dd-MM-yyyy').format(element.date.toDate());
       final valueLower = value.toLowerCase();
 
       return titleLower.contains(valueLower) || teacherLower.contains(valueLower) || date.contains(valueLower);
     }).toList();
 
-    setState(() {
-      this._data = meetings;
-    });
+    setState(() => this._data = meetings);
   }
 }

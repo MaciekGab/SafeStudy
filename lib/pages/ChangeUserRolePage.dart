@@ -129,7 +129,6 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
   Future<void> updateUserAction() async {
     String name = _firstNameController.text.trim();
     String last = _lastNameController.text.trim();
-    print(uid + ' : role = ' + roles[isSelected.indexOf(true)]);
     await _db.editUserData(uid,roles[isSelected.indexOf(true)],name,last);
     _showSnackBar(successfulUserUpdate);
   }
@@ -137,7 +136,6 @@ class _ChangeUserRolePageState extends State<ChangeUserRolePage> {
   Future<void> searchUserAction() async {
     isSelected = [false, false, false];
     String userEmail = _emailController.text.trim();
-    print(userEmail);
     final result = await _db.getUserByEmail(userEmail);
     if(result != null){
       setState(() {

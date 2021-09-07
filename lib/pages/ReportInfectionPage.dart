@@ -47,7 +47,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
                   await pickDate(context, dateOfInfection).then((value) {setState(() {dateOfInfection = value;});});
                 }, alignment: Alignment.center, smallButton: false, icon: Icons.calendar_today_rounded, width: 0.7*size.width, height: 0.11*size.height,),
                 RoundedElevatedButton(child: Text(' Report ',), onPressed: () async{
-                  return await repostAction(userData, context);
+                  return await reportAction(userData, context);
                 }, alignment: Alignment.centerRight, smallButton: true, icon: Icons.check),
                 SizedBox(height: 20,),
                 // Text('QR value: '+ _qrCodeData)
@@ -59,7 +59,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
     );
   }
 
-  Future<void> repostAction(UserDataModel userData, BuildContext context) async {
+  Future<void> reportAction(UserDataModel userData, BuildContext context) async {
     dataSet = {};
     listOfMeetings = [];
     dateToCompare = Timestamp.fromDate(dateOfInfection);
@@ -88,6 +88,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
             TextButton(
               onPressed: () async {
                 await sendNotificationAction(userData, context);
+                Navigator.of(context).popUntil((route) => route.isFirst);
               },
               child: Text('YES'),
             ),
@@ -101,19 +102,22 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
   }
 
   Future<void> sendNotificationAction(UserDataModel userData, BuildContext context) async {
-    await _db.reportInfection(userData.firstName + ' ' + userData.lastName, dateToCompare, true, dataSet.toList(), userData.uid);
-    final response = await NotificationService.sendTo(title: titleOfWaring, body: bodyOfWaring, fcmTokens: usersToNotify);
-    print('Notification response code is: ${response.statusCode}');
-    print('Notification response code is: ${response.body}');
+    await _db.reportInfection(userData.firstName + ' ' + userData.lastName,
+        dateToCompare, true, dataSet.toList(), userData.uid);
+    final response = await NotificationService.sendTo(
+        title: titleOfWaring, body: bodyOfWaring, fcmTokens: usersToNotify);
+    _showSnackBar(response.statusCode);
+  }
+
+  void _showSnackBar(int code){
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: response.statusCode == 200 ? Text(successfulSent) : Text(unsuccessfulSent),
+      content: code == 200 ? Text(unsuccessfulSent) : Text(successfulSent),
       duration: Duration(seconds: 2),
       action: SnackBarAction(
         label: 'OK',
         onPressed: () { },
       ),
     ));
-    Navigator.of(context).popUntil((route) => route.isFirst);
   }
 }
 

@@ -29,15 +29,18 @@ class DatabaseService{
   }
   Future<List<MeetingDataModel>> getMeetings() async {
     List<MeetingDataModel> result = [];
-    await _db.collection('meetings').get().then((value) => value.docs.forEach((element) => result.add(MeetingDataModel.fromFirestore(element))));
+    await _db.collection('meetings').orderBy("date",descending: true).get()
+        .then((value) => value.docs.forEach((element) => result.add(MeetingDataModel.fromFirestore(element))));
     return result;
   }
   Future<List<MeetingDataModel>> getMeetingsForTeacher(String uid) async {
     List<MeetingDataModel> result = [];
-    await _db.collection('meetings').where('teacherID', isEqualTo: uid).get().then((value) => value.docs.forEach((element) => result.add(MeetingDataModel.fromFirestore(element))));
+    await _db.collection('meetings').where('teacherID', isEqualTo: uid).orderBy("date",descending: true).get()
+        .then((value) => value.docs.forEach((element) => result.add(MeetingDataModel.fromFirestore(element))));
     return result;
   }
-  Future<String> createMeeting(String classroom, DateTime date, String title, String fcmToken, String userName, String uid, bool isActive) async{
+  Future<String> createMeeting(String classroom, DateTime date, String title,
+      String fcmToken, String userName, String uid, bool isActive) async{
     var result = await FirebaseFirestore.instance.collection('meetings').add(
         {
           'classroom': classroom,
@@ -55,8 +58,10 @@ class DatabaseService{
     );
     return result.id;
   }
-  Future<void> updatePastMeetings(String uid,String docId, String title, DateTime date, String classroom, String teacherName) async{
-    await _db.collection('profiles').doc(uid).collection('pastMeetings').doc(docId).set({'title': title, 'date': date, 'classroom': classroom, 'teacherName': teacherName});
+  Future<void> updatePastMeetings(String uid,String docId, String title, DateTime date,
+      String classroom, String teacherName) async{
+    await _db.collection('profiles').doc(uid).collection('pastMeetings').doc(docId)
+        .set({'title': title, 'date': date, 'classroom': classroom, 'teacherName': teacherName});
   }
   Future<void> closeMeeting(String meetingId)async{
     _db.collection('meetings').doc(meetingId).update({'isActive': false});
@@ -83,7 +88,7 @@ class DatabaseService{
   }
   Future<List<PastMeetingDataModel>> getPastMeetings(String uid) async{
     List<PastMeetingDataModel> pastMeetingsList = [];
-    await _db.collection('profiles').doc(uid).collection('pastMeetings').orderBy("date").get()
+    await _db.collection('profiles').doc(uid).collection('pastMeetings').orderBy("date",descending: true).get()
         .then((value) => value.docs.forEach((element) {
           pastMeetingsList.add(PastMeetingDataModel.fromFirestore(element));
         })

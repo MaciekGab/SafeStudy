@@ -30,7 +30,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               return AlertDialog(
-                // backgroundColor: Colors.red[100],
                 title: Text(value.notification.title),
                 content: Text(value.notification.body),
                 actions: [
@@ -46,48 +45,46 @@ class _AuthWrapperState extends State<AuthWrapper> {
       }
     });
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      print("message recieved");
-      print(event.notification.body);
-      print(event.data.values);
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              // backgroundColor: Colors.red[100],
-              title: Text(event.notification.title),
-              content: Text(event.notification.body),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          });
+      if (event != null) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(event.notification.title),
+                content: Text(event.notification.body),
+                actions: [
+                  TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
+      }
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage event) {
-      print('Message clicked!');
-      showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              // backgroundColor: Colors.red[300],
-              title: Text(event.notification.title),
-              content: Text(event.notification.body),
-              actions: [
-                TextButton(
-                  child: Text("OK"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          });
+      if(event != null) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(event.notification.title),
+                content: Text(event.notification.body),
+                actions: [
+                  TextButton(
+                    child: Text("OK"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
+      }
     });
 
   }

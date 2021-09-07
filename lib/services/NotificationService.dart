@@ -7,7 +7,8 @@ import 'package:test_auth_with_rolebased_ui/utils/Keys.dart';
 class NotificationService {
   static final http.Client client = http.Client();
   static final Uri url = Uri.parse(urlToFcm);
-   static Future<http.Response> sendTo({@required String title, @required String body, @required List<String> fcmTokens}) async{
+   static Future<http.Response> sendTo({@required String title,
+     @required String body, @required List<String> fcmTokens}) async{
      return await client.post(
        url,
        body: json.encode({

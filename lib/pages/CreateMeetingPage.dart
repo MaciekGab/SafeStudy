@@ -27,7 +27,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
   var _db = DatabaseService();
   String classroom,title,result;
   DateTime date = DateTime.now();
-  bool isNotMeetingCreated = true;
+  bool isMeetingNotCreated = true;
   @override
   Widget build(BuildContext context) {
     var userData = Provider.of<UserDataModel>(context);
@@ -39,7 +39,7 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
             ),
             body: Center(
                     child: Visibility(
-                      visible: isNotMeetingCreated,
+                      visible: isMeetingNotCreated,
                       replacement:Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -103,25 +103,25 @@ class _CreateMeetingPageState extends State<CreateMeetingPage> {
      if (_formKey.currentState.validate()) {
       classroom = _classroomNameController.text.trim();
       title = _meetingTitleController.text.trim();
+      String teacherName = userData.firstName + ' ' + userData.lastName;
       String fcmToken =  await FirebaseMessaging.instance.getToken();
-      result = await _db.createMeeting(classroom,date,title,fcmToken,userData.firstName + ' ' + userData.lastName,userData.uid,true);
-      await _db.updatePastMeetings(userData.uid, result, title, date, classroom, userData.firstName + ' '+ userData.lastName);
-      setState(() {
-        isNotMeetingCreated = false;
-      });
-      print(result);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(meetingCreated),
-        duration: Duration(seconds: 2),
-        action: SnackBarAction(
-          label: 'OK',
-          onPressed: () { },
-        ),
-      ));
+
+      result = await _db.createMeeting(classroom,date,title,fcmToken,teacherName,userData.uid,true);
+      await _db.updatePastMeetings(userData.uid, result, title, date, classroom, teacherName);
+      setState(() =>isMeetingNotCreated = false);
+      _showSnackBar(context, meetingCreated);
     }
-    else {
-      print('Error');
-    }
+  }
+
+  void _showSnackBar(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(meetingCreated),
+      duration: Duration(seconds: 2),
+      action: SnackBarAction(
+        label: 'OK',
+        onPressed: () { },
+      ),
+    ));
   }
 }
 
