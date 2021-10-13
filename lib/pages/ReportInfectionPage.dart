@@ -111,7 +111,7 @@ class _ReportInfectionPageState extends State<ReportInfectionPage> {
 
   void _showSnackBar(int code){
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: code == 200 ? Text(unsuccessfulSent) : Text(successfulSent),
+      content: code == 200 ? Text(successfulSent) : Text(unsuccessfulSent),
       duration: Duration(seconds: 2),
       action: SnackBarAction(
         label: 'OK',
